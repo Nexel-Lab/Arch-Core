@@ -19,7 +19,7 @@ const useFetchQL = async (
       ...options?.headers,
     },
     body: JSON.stringify(ql),
-    next: { revalidate: options.revalidate || 0, ...options?.next },
+    next: { revalidate: options?.revalidate || 0, ...options?.next },
   }).then((res) => res.json())
 
   if (callback) {
