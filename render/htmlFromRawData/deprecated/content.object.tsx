@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Content, ImageContent, TextContent } from 'types'
+import type { TContent, TImageContent, TTextContent } from './_header'
+import { CONTENT_BLOCK } from './_header'
 import Image from 'next/image'
-import { cn } from '@/libs/styles'
-import { POST } from '@/enums/content'
+import { cn } from '../../../view/styles'
 
-const Text = ({ block }: { block: TextContent[] }) => {
+const Text = ({ block }: { block: TTextContent[] }) => {
   return (
     <>
       {block.map(({ text, bold }, i: number) => {
@@ -24,7 +24,7 @@ interface BlockComponent {
   block: Partial<{
     type: string
     className: string
-    children: TextContent[] | ImageContent[] | Content[]
+    children: TTextContent[] | TImageContent[] | TContent[]
     src: string
     altText: string
     height: number
@@ -35,44 +35,44 @@ interface BlockComponent {
 }
 
 type BlockComponentsType = {
-  [Key in POST.CONTENT_BLOCK]: React.FC<BlockComponent>
+  [Key in CONTENT_BLOCK]: React.FC<BlockComponent>
 }
 
 const BlockComponents: BlockComponentsType = {
   paragraph: ({ block }) => (
     <p className='py-2 text-[#5c5c5c] dark:text-[#bbbbbb]'>
       &emsp;&emsp;&emsp;
-      <Text block={block.children as TextContent[]} />
+      <Text block={block.children as TTextContent[]} />
     </p>
   ),
   'heading-one': ({ block }) => (
     <h1 className='pt-16 pb-4 text-3xl font-semibold lg:pt-24 lg:text-5xl'>
-      <Text block={block.children as TextContent[]} />
+      <Text block={block.children as TTextContent[]} />
     </h1>
   ),
   'heading-two': ({ block }) => (
     <h2 className='pt-16 pb-4 text-2xl font-semibold lg:pt-24 lg:text-4xl'>
-      <Text block={block.children as TextContent[]} />
+      <Text block={block.children as TTextContent[]} />
     </h2>
   ),
   'heading-three': ({ block }) => (
     <h3 className='pt-16 pb-4 text-xl font-semibold lg:pt-24 lg:text-3xl'>
-      <Text block={block.children as TextContent[]} />
+      <Text block={block.children as TTextContent[]} />
     </h3>
   ),
   'heading-four': ({ block }) => (
     <h4 className='py-4 pl-4 text-lg font-semibold lg:py-8 lg:pl-8 lg:text-xl'>
-      <Text block={block.children as TextContent[]} />
+      <Text block={block.children as TTextContent[]} />
     </h4>
   ),
   'heading-five': ({ block }) => (
     <h5 className='py-8 pl-8 font-semibold lg:text-lg'>
-      <Text block={block.children as TextContent[]} />
+      <Text block={block.children as TTextContent[]} />
     </h5>
   ),
   'heading-six': ({ block }) => (
     <h6 className='py-8 pl-6 text-xl font-light italic lg:py-16 lg:pl-12 lg:text-3xl lg:leading-10'>
-      <Text block={block.children as TextContent[]} />
+      <Text block={block.children as TTextContent[]} />
     </h6>
   ),
   image: ({ block }) =>
@@ -101,16 +101,16 @@ const BlockComponents: BlockComponentsType = {
   ),
   'block-quote': ({ block }) => (
     <blockquote className='border-l-quaternary-2 dark:border-l-primary-0 my-6 rounded-md border-4 border-y-white/0 border-r-white/0 bg-black/5 p-6 text-xl font-light lg:my-12 lg:text-2xl lg:leading-10 dark:bg-black/40'>
-      <Text block={block.children as TextContent[]} />
+      <Text block={block.children as TTextContent[]} />
     </blockquote>
   ),
 }
 
-const HTMLFromRaw = ({ raw }: { raw: Content[] }) => {
+const HTMLFromRaw = ({ raw }: { raw: TContent[] }) => {
   return (
     <>
       {raw.map((block, index) => {
-        const Component = BlockComponents[block.type as POST.CONTENT_BLOCK]
+        const Component = BlockComponents[block.type as CONTENT_BLOCK]
         return Component ? <Component key={index} block={block} /> : null
       })}
     </>

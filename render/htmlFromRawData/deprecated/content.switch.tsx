@@ -1,9 +1,9 @@
-import { Content, ImageContent, TextContent, RawContent } from 'types'
+import { TContent, TImageContent, TTextContent, TRawContent } from './_header'
 import React from 'react'
 import Image from 'next/image'
-import { cn } from '@/libs/styles'
+import { cn } from '../../../view/styles'
 
-const renderContent = (content: Content | TextContent | ImageContent) => {
+const renderContent = (content: TContent | TTextContent | TImageContent) => {
   if ('text' in content) {
     // Handle TextContent
     return content.bold ? (
@@ -137,7 +137,7 @@ const renderContent = (content: Content | TextContent | ImageContent) => {
 }
 
 interface HTMLFromRawProps {
-  data: { content: RawContent }
+  data: { content: TRawContent }
 }
 
 const HTMLFromRaw: React.FC<HTMLFromRawProps> = ({ data }) => {
