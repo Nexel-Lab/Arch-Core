@@ -1,7 +1,7 @@
 'use client'
 
 import { ToastContainer } from 'react-toastify'
-import clsx from 'clsx'
+import { cn } from '../../view/styles'
 
 const Toast = () => {
   const contextClass = {
@@ -20,7 +20,7 @@ const Toast = () => {
     <ToastContainer
       position='bottom-right'
       toastClassName={({ type }: any) =>
-        clsx(
+        cn(
           contextClass[(type || 'default') as tToastType],
           'relative flex p-1 my-3 mx-3 min-h-10 rounded-md justify-between overflow-hidden cursor-pointer bg-opacity-30 backdrop-filter backdrop-blur-md border border-white/10 z-90',
         )
