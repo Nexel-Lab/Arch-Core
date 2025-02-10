@@ -1,8 +1,22 @@
-import type { TSeverityLevel, TLogData, ILogger } from '../_header'
+import type {
+  TSeverityLevel,
+  TLogData,
+  ILogger,
+  IRequestContext,
+} from '../_header'
 import { SEVERITY_LEVEL } from '../_header'
+import type { Scope } from '@sentry/nextjs'
 
 export abstract class BaseLogger implements ILogger {
   protected isDevelopment = process.env.NODE_ENV === 'development'
+  protected currentContext: Record<string, any> = {}
+  private logQueue: Array<{
+    level: TSeverityLevel
+    message: string
+    data?: TLogData
+  }> = []
+  private batchSize = 10
+  private rateLimiter = new Map<string, number>()
 
   protected abstract logToSystem(
     level: TSeverityLevel,
@@ -18,7 +32,7 @@ export abstract class BaseLogger implements ILogger {
       timestamp,
       level,
       message,
-      ...(data && { data }),
+      ...(data && { data: this.sanitizeData(data) }),
     }
 
     this.logToSystem(level, message, TLogData)
@@ -59,5 +73,78 @@ export abstract class BaseLogger implements ILogger {
     }
   }
 
+  public queueLog(
+    level: TSeverityLevel,
+    message: string,
+    data?: TLogData,
+  ): void {
+    this.logQueue.push({ level, message, data })
+
+    if (this.logQueue.length >= this.batchSize) {
+      this.flushLogs()
+    }
+  }
+
+  protected flushLogs(): void {
+    while (this.logQueue.length > 0) {
+      const log = this.logQueue.shift()
+      if (log) {
+        this.log(log.level, log.message, log.data)
+      }
+    }
+  }
+
+  protected shouldRateLimit(key: string, timeWindowMs: number = 1000): boolean {
+    const now = Date.now()
+    const lastLog = this.rateLimiter.get(key)
+
+    if (!lastLog || now - lastLog >= timeWindowMs) {
+      this.rateLimiter.set(key, now)
+      return false
+    }
+    return true
+  }
+
+  protected sanitizeData(data: TLogData): TLogData {
+    const sensitiveKeys = [
+      'password',
+      'token',
+      'secret',
+      'credentials',
+      'apiKey',
+    ]
+    return Object.entries(data).reduce((acc, [key, value]) => {
+      if (typeof value === 'object' && value !== null) {
+        acc[key] = this.sanitizeData(value as TLogData)
+      } else {
+        acc[key] = sensitiveKeys.includes(key.toLowerCase())
+          ? '[REDACTED]'
+          : value
+      }
+      return acc
+    }, {} as TLogData)
+  }
+
+  public async withContext<T>(
+    context: Record<string, any>,
+    callback: () => Promise<T>,
+  ): Promise<T> {
+    const oldContext = { ...this.currentContext }
+    Object.assign(this.currentContext, context)
+
+    try {
+      return await callback()
+    } finally {
+      this.currentContext = oldContext
+    }
+  }
+
   protected abstract configureSentry(error: Error, extra?: TLogData): void
+  // protected abstract setRequestContext(context: IRequestContext): void
+  // protected abstract withScope(callback: (scope: Scope) => void): void
+  // protected abstract addBreadcrumb(
+  //   message: string,
+  //   category?: string,
+  //   level?: TSeverityLevel,
+  // ): void
 }

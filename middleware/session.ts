@@ -1,6 +1,6 @@
 import type { MiddlewareSessionData } from './_header'
 import type { NextRequest } from 'next/server'
-import { prisma } from '@backend/database'
+import { prisma } from '@server/infrastructure/prisma'
 import { getPermissionsByRoleAndPlan } from './session.utils'
 
 const validateSession = async (

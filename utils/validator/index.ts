@@ -1,2 +1,2 @@
-export { default as email } from './email'
-export { default as password } from './password'
+export { emailSchema, validateEmail } from './email'
+export { passwordSchema, validatePassword, isPasswordValid } from './password'

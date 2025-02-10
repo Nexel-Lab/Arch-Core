@@ -14,6 +14,15 @@ export enum SEVERITY_LEVEL {
   DEBUG = 'debug',
 }
 
+export interface IRequestContext extends Record<string, unknown> {
+  requestId: string
+  url: string
+  method: string
+  userAgent?: string
+  ip?: string
+  [key: string]: unknown
+}
+
 export interface ILogger {
   debug(message: string, data?: TLogData): void
   info(message: string, data?: TLogData): void
