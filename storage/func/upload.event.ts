@@ -1,35 +1,37 @@
-type tUploadOptions = {
-  bucketSuffix?: string | undefined
-  fileName?: string | undefined
-  flag?: string | undefined
-  metadata?: any
+type TUploadOptions = {
+  bucketSuffix?: string
+  fileName?: string
+  flag?: string
+  metadata?: Record<string, string>
 }
 
 const uploadFile = async (file: File, urlEndpoint = '/api/upload') => {
-  const xhr = new XMLHttpRequest()
-
-  const res = await new Promise((resolve) => {
-    xhr.addEventListener('loadend', () => {
-      const success = xhr.readyState === 4 && xhr.status === 200
-      if (!success) resolve(false)
-      resolve(JSON.parse(xhr.response))
-    })
-    xhr.addEventListener('error', () => {
-      resolve(false)
-    })
-    xhr.addEventListener('abort', () => {
-      resolve(false)
-    })
+  return new Promise<object>((resolve, reject) => {
+    const xhr = new XMLHttpRequest()
     xhr.open('PUT', urlEndpoint)
     xhr.setRequestHeader(
       'Content-Type',
-      file.type ?? 'application/octet-stream',
+      file.type || 'application/octet-stream',
     )
-    xhr.setRequestHeader('Content-Size', file.size.toString())
+    xhr.setRequestHeader('Content-Length', file.size.toString())
+    xhr.onloadend = () => {
+      if (xhr.status === 200) {
+        try {
+          resolve(JSON.parse(xhr.responseText))
+        } catch (error) {
+          reject(new Error('Failed to parse JSON response'))
+        }
+      } else {
+        reject(new Error(`Upload failed with status ${xhr.status}`))
+      }
+    }
+    xhr.onerror = () => reject(new Error('Upload request failed'))
+    xhr.onabort = () => reject(new Error('Upload aborted'))
     xhr.send(file)
-  })
 
-  return res
+    // Cleanup function to avoid memory issues
+    return () => xhr.abort()
+  })
 }
 
 export { uploadFile }

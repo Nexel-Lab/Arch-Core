@@ -1,54 +1,51 @@
-type tUploadResult = {
-  key: string
-}
+type TUploadResult = { key: string }
 
-type tUploadToS3 = (
+type TUploadToS3 = (
   file: File | ArrayBuffer,
   fileName: string,
-  bucketSuffix: string | undefined,
+  bucketSuffix?: string,
   metadata?: Record<string, string>,
-) => Promise<tUploadResult>
+) => Promise<TUploadResult>
 
-const presignedUpload: tUploadToS3 = async (
+const presignedUpload: TUploadToS3 = async (
   file,
   dir,
   bucketSuffix = undefined,
 ) => {
-  const fetchUrl = `/api/upload/presigned?name=${dir}${bucketSuffix ? `&bucketSuffix=${bucketSuffix}` : ''}`
+  const fetchUrl = `/api/upload/presigned?name=${dir}${
+    bucketSuffix ? `&bucketSuffix=${bucketSuffix}` : ''
+  }`
 
   const res = await fetch(fetchUrl)
-  if (!res.ok) {
-    throw new Error('Failed to get presigned upload url')
-  }
-  const data = await res.json()
+  if (!res.ok) throw new Error('Failed to get presigned upload url')
 
-  if ('error' in data) {
-    console.error(data.error)
-    throw data.error
-  }
+  const data = await res.json()
+  if ('error' in data) throw new Error(data.error)
 
   const { key, url } = data
 
-  const xhr = new XMLHttpRequest()
+  return new Promise<TUploadResult>((resolve, reject) => {
+    const xhr = new XMLHttpRequest()
 
-  await new Promise((resolve) => {
-    xhr.addEventListener('loadend', () => {
-      const success = xhr.readyState === 4 && xhr.status === 200
-      if (!success) resolve(false)
-      resolve(success)
-    })
-    xhr.addEventListener('error', () => {
-      resolve(false)
-    })
-    xhr.addEventListener('abort', () => {
-      resolve(false)
-    })
     xhr.open('PUT', url)
     xhr.setRequestHeader('Content-Type', 'application/octet-stream')
-    xhr.send(file)
-  })
 
-  return { key }
+    xhr.onloadend = () => {
+      if (xhr.status === 200) {
+        resolve({ key })
+      } else {
+        reject(new Error(`Upload failed with status ${xhr.status}`))
+      }
+    }
+
+    xhr.onerror = () => reject(new Error('Upload request failed'))
+    xhr.onabort = () => reject(new Error('Upload aborted'))
+
+    xhr.send(file instanceof File ? file : new Blob([file]))
+
+    // Cleanup function to avoid memory issues
+    return () => xhr.abort()
+  })
 }
 
 export { presignedUpload }
