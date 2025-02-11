@@ -13,7 +13,11 @@ const prisma =
         : ['error'],
   })
 
-if (process.env.NODE_ENV !== 'production')
-  globalForPrisma.prisma = prisma as PrismaClient
+// if (process.env.NODE_ENV !== 'production')
+//   globalForPrisma.prisma = prisma as PrismaClient
+
+if (!globalForPrisma.prisma) {
+  globalForPrisma.prisma = prisma
+}
 
 export { prisma }

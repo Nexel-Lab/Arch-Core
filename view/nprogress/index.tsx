@@ -120,6 +120,14 @@ export const CreateProgress = ({ color }: { color: string }) => {
     const mutationObserver = new MutationObserver(handleMutation)
     mutationObserver.observe(document, { childList: true, subtree: true })
 
+    // window.history.pushState = new Proxy(window.history.pushState, {
+    //   apply: (target, thisArg, argArray: PushStateInput) => {
+    //     _setCursor(undefined)
+    //     NProgress.done()
+    //     return target.apply(thisArg, argArray)
+    //   },
+    // })
+    const originalPushState = window.history.pushState
     window.history.pushState = new Proxy(window.history.pushState, {
       apply: (target, thisArg, argArray: PushStateInput) => {
         _setCursor(undefined)
@@ -127,6 +135,15 @@ export const CreateProgress = ({ color }: { color: string }) => {
         return target.apply(thisArg, argArray)
       },
     })
+
+    return () => {
+      const anchorElements = document.querySelectorAll('a')
+      anchorElements.forEach((anchor) =>
+        anchor.removeEventListener('click', handleAnchorClick),
+      )
+      mutationObserver.disconnect()
+      window.history.pushState = originalPushState
+    }
   })
 
   return styles
