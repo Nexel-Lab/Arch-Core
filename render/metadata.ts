@@ -58,12 +58,12 @@ export const getMetadata = (metaData: {
     images: [metaData.coverImg],
   },
   icons: {
-    icon: '/icon.svg',
-    shortcut: '/icon.svg',
-    apple: '/icon.svg',
+    icon: '/icon.ico',
+    shortcut: '/icon.ico',
+    apple: '/icon.ico',
     other: {
       rel: 'apple-touch-icon-precomposed',
-      url: '/icon.svg',
+      url: '/icon.ico',
     },
   },
   // robots: {
