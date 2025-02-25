@@ -13,7 +13,7 @@ export const presignedRoute = async (
   }
 
   try {
-    const headersList = headers()
+    const headersList = await headers()
     const _fileType = headersList.get('content-Type')
 
     const { searchParams } = new URL(req.url)

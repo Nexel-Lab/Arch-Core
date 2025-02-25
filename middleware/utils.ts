@@ -29,7 +29,7 @@ export function logRequest(
       userId: sessionData?.userId,
       role: sessionData?.role,
       userAgent: request.headers.get('user-agent'),
-      ip: request.ip,
+      ip: request.ip || null,
     })
   }
 }
