@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react'
+'use client'
+
 import type { RefObject } from 'react'
+import { useState, useEffect } from 'react'
 
 function useElementPosition(el: RefObject<any>) {
   function getElement(x: number, y: number) {

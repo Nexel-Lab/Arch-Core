@@ -1,3 +1,5 @@
+'use client'
+
 import { Dispatch, SetStateAction, useState } from 'react'
 
 interface ReturnType {

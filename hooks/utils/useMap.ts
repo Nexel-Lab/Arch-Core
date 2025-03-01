@@ -1,3 +1,5 @@
+'use client'
+
 import { useCallback, useState } from 'react'
 
 export type MapOrEntries<K, V> = Map<K, V> | [K, V][]

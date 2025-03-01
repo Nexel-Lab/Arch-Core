@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+'use client'
+
 import { useState, useEffect } from 'react'
 import type { RefObject } from 'react'
 

@@ -1,11 +1,13 @@
-import { RefObject, useEffect, useState } from 'react'
+'use client'
+
+import { useEffect, useState } from 'react'
 
 interface Args extends IntersectionObserverInit {
   freezeOnceVisible?: boolean
 }
 
 function useIntersectionObserver(
-  elementRef: RefObject<Element>,
+  elementRef: React.RefObject<Element>,
   {
     threshold = 0,
     root = null,

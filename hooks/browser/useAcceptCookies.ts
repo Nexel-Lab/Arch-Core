@@ -1,9 +1,12 @@
+'use client'
+
 import Cookies from 'js-cookie'
 import { useEffect, useState } from 'react'
 
-const COOKIE_NAME = 'accept_cookies'
+const DEFAULT_COOKIE_NAME = 'accept_cookies'
 
-const useAcceptCookies = () => {
+const useAcceptCookies = (name?: string) => {
+  const COOKIE_NAME = name || DEFAULT_COOKIE_NAME
   const [acceptedCookies, setAcceptedCookies] = useState(true)
 
   useEffect(() => {

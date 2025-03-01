@@ -1,4 +1,7 @@
-import { Dispatch, SetStateAction, useCallback, useMemo, useState } from 'react'
+'use client'
+
+import type { Dispatch, SetStateAction } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 interface Helpers {
   goToNextStep: () => void

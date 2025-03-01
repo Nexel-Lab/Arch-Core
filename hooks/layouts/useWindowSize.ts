@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useMemo, useSyncExternalStore } from 'react'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 

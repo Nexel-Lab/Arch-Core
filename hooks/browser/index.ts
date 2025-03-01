@@ -1,0 +1,5 @@
+export { useAcceptCookies } from './useAcceptCookies'
+export { useReadLocalStorage } from './useReadLocalStorage'
+export { useLocalStorage } from './useLocalStorage'
+export { useDeviceDetect } from './useDeviceDetect'
+export { useCopyToClipboard } from './useCopyToClipboard'

@@ -1,4 +1,5 @@
-/* eslint-disable react-hooks/rules-of-hooks */
+'use client'
+
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDebounce } from '../utils/useDebounce'
 
@@ -38,7 +39,7 @@ const emptySize: Size = {
   isReady: false,
 }
 
-const useElementSize = (elRef: ElRef) => {
+const useElementSizeWithDebounce = (elRef: ElRef) => {
   const [size, setSize] = useState<Size>(emptySize)
 
   const onResize = useCallback(() => {
@@ -71,4 +72,4 @@ const useElementSize = (elRef: ElRef) => {
   }
 }
 
-export { useElementSize }
+export { useElementSizeWithDebounce }

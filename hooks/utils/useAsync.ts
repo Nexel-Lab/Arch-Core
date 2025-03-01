@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect, useCallback } from 'react'
 
 const useAsync = (asyncFunction: () => Promise<any>, immediate = true) => {

@@ -1,3 +1,5 @@
+'use client'
+
 import { useBoolean } from './useBoolean'
 import { useCounter } from './useCounter'
 import { useInterval } from './useInterval'

@@ -1,7 +1,9 @@
+'use client'
+
 import { useEffect, useRef } from 'react'
 
-function usePrevious(value: any) {
-  const ref = useRef()
+function usePrevious<T>(value: T) {
+  const ref = useRef<T | undefined>(undefined)
   useEffect(() => {
     ref.current = value
   }, [value])

@@ -1,3 +1,5 @@
+'use client'
+
 import { useReducer, useCallback } from 'react'
 
 const initialState = {

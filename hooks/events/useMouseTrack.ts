@@ -1,6 +1,8 @@
+'use client'
+
 import { useState, useEffect } from 'react'
 
-function MouseTrack() {
+function useMouseTrack() {
   const [mousePosition, setMousePosition] = useState<any>({
     x: null,
     y: null,
@@ -27,4 +29,4 @@ function MouseTrack() {
   return mousePosition
 }
 
-export { MouseTrack }
+export { useMouseTrack }

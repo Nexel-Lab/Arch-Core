@@ -1,7 +1,12 @@
+'use client'
+
 import { useEffect, useRef } from 'react'
 
-function useMemoCompare(next: any, compare: (p: any, n?: any) => boolean) {
-  const previousRef = useRef()
+function useMemoCompare<T>(
+  next: T,
+  compare: (prev: T | undefined, next: T) => boolean,
+): T {
+  const previousRef = useRef<T | undefined>(undefined)
   const previous = previousRef.current
   const isEqual = compare(previous, next)
 
@@ -11,7 +16,7 @@ function useMemoCompare(next: any, compare: (p: any, n?: any) => boolean) {
     }
   })
 
-  return isEqual ? previous : next
+  return isEqual ? previous! : next
 }
 
 export { useMemoCompare }
