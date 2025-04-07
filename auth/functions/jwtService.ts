@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { AxiosRequestConfig, AxiosResponse } from 'axios'
+import type { InternalAxiosRequestConfig, AxiosResponse } from 'axios'
 import axios from 'axios'
 import jwtDefaultConfig from './jwtDefaultConfig'
 
@@ -29,7 +29,7 @@ export default class JwtService {
     this.jwtConfig = { ...jwtDefaultConfig, ...jwtOverrideConfig }
 
     axios.interceptors.request.use(
-      (config: AxiosRequestConfig) => {
+      (config: InternalAxiosRequestConfig) => {
         const accessToken = this.getToken()
         if (accessToken && config.headers) {
           config.headers.Authorization = `${this.jwtConfig.tokenType} ${accessToken}`
