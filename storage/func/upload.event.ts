@@ -1,9 +1,9 @@
-type TUploadOptions = {
-  bucketSuffix?: string
-  fileName?: string
-  flag?: string
-  metadata?: Record<string, string>
-}
+// type TUploadOptions = {
+//   bucketSuffix?: string
+//   fileName?: string
+//   flag?: string
+//   metadata?: Record<string, string>
+// }
 
 const uploadFile = async (file: File, urlEndpoint = '/api/upload') => {
   return new Promise<object>((resolve, reject) => {
@@ -18,7 +18,7 @@ const uploadFile = async (file: File, urlEndpoint = '/api/upload') => {
       if (xhr.status === 200) {
         try {
           resolve(JSON.parse(xhr.responseText))
-        } catch (error) {
+        } catch (_error) {
           reject(new Error('Failed to parse JSON response'))
         }
       } else {

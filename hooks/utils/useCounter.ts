@@ -1,13 +1,13 @@
 'use client'
 
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 
 interface ReturnType {
   count: number
   increment: () => void
   decrement: () => void
   reset: () => void
-  setCount: Dispatch<SetStateAction<number>>
+  setCount: React.Dispatch<React.SetStateAction<number>>
 }
 
 function useCounter(initialValue?: number): ReturnType {

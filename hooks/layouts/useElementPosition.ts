@@ -3,20 +3,22 @@
 import type { RefObject } from 'react'
 import { useState, useEffect } from 'react'
 
-function useElementPosition(el: RefObject<any>) {
-  function getElement(x: number, y: number) {
-    return {
-      x: x,
-      y: y,
-    }
-  }
+type TElementPosition = {
+  x: number
+  y: number
+}
 
-  const [elementPosition, setElementPosition] =
-    useState<typeof getElement>(getElement)
+function useElementPosition(el: RefObject<HTMLElement>): TElementPosition {
+  const [elementPosition, setElementPosition] = useState<TElementPosition>({
+    x: 0,
+    y: 0,
+  })
 
   useEffect(() => {
     function handlePosition() {
       const element = el.current
+      if (!element) return
+
       const x =
         element.getBoundingClientRect().left +
         document.documentElement.scrollLeft +
@@ -25,9 +27,19 @@ function useElementPosition(el: RefObject<any>) {
         element.getBoundingClientRect().top +
         document.documentElement.scrollTop +
         element.offsetHeight / 2
-      setElementPosition(getElement(x, y) as any)
+
+      setElementPosition({ x, y })
     }
+
     handlePosition()
+
+    window.addEventListener('resize', handlePosition)
+    // window.addEventListener('scroll', handlePosition)
+
+    return () => {
+      window.removeEventListener('resize', handlePosition)
+      // window.removeEventListener('scroll', handlePosition)
+    }
   }, [el])
 
   return elementPosition

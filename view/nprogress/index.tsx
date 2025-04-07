@@ -4,7 +4,7 @@
 import { useEffect } from 'react'
 import NProgress from 'nprogress'
 // import { useShallow } from 'zustand/shallow'
-import { useUiState, CURSOR } from '@/store'
+import { useUiState } from '@/store'
 
 type PushStateInput = [
   data: any,
@@ -14,7 +14,7 @@ type PushStateInput = [
 
 export const CreateProgress = ({ color }: { color: string }) => {
   const _setCursor = useUiState((st) => st.setCursor)
-  const height = 2 + 'px'
+  const height = `${2}px`
 
   const styles = (
     <style>
@@ -30,7 +30,7 @@ export const CreateProgress = ({ color }: { color: string }) => {
           top: 0;
           left: 0;
           width: 100%;
-          height: ${typeof height === `string` ? height : `${height}px`};
+          height: ${typeof height === 'string' ? height : `${height}px`};
         }
         /* Fancy blur effect */
         #nprogress .peg {

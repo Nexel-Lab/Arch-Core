@@ -2,7 +2,7 @@ import { isDefined } from './type-guards'
 
 export function parseNumericString(value: unknown) {
   return typeof value === 'string'
-    ? parseInt(value, 10)
+    ? Number.parseInt(value, 10)
     : typeof value === 'number'
     ? value
     : undefined

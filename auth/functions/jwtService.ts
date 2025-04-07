@@ -1,30 +1,37 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 import axios from 'axios'
 import jwtDefaultConfig from './jwtDefaultConfig'
 
+export interface JwtConfig {
+  loginEndpoint: string
+  registerEndpoint: string
+  refreshEndpoint: string
+  logoutEndpoint: string
+  tokenType: string
+  storageTokenKeyName: string
+  storageRefreshTokenKeyName: string
+}
+
+interface TokenResponse {
+  accessToken: string
+  refreshToken: string
+}
+
+type Subscriber = (accessToken: string) => void
+
 export default class JwtService {
-  jwtConfig = { ...jwtDefaultConfig }
+  public jwtConfig: JwtConfig
+  private isAlreadyFetchingAccessToken = false
+  private subscribers: Subscriber[] = []
 
-  isAlreadyFetchingAccessToken = false
-
-  subscribers = []
-
-  constructor(jwtOverrideConfig: {
-    loginEndpoint: string
-    registerEndpoint: string
-    refreshEndpoint: string
-    logoutEndpoint: string
-    tokenType: string
-    storageTokenKeyName: string
-    storageRefreshTokenKeyName: string
-  }) {
-    this.jwtConfig = { ...this.jwtConfig, ...jwtOverrideConfig }
+  constructor(jwtOverrideConfig?: Partial<JwtConfig>) {
+    this.jwtConfig = { ...jwtDefaultConfig, ...jwtOverrideConfig }
 
     axios.interceptors.request.use(
-      (config) => {
+      (config: AxiosRequestConfig) => {
         const accessToken = this.getToken()
-
-        if (accessToken) {
+        if (accessToken && config.headers) {
           config.headers.Authorization = `${this.jwtConfig.tokenType} ${accessToken}`
         }
         return config
@@ -34,70 +41,78 @@ export default class JwtService {
 
     axios.interceptors.response.use(
       (response) => response,
-      (error) => {
+      async (error) => {
         const { config, response } = error
         const originalRequest = config
 
         if (response && response.status === 401) {
           if (!this.isAlreadyFetchingAccessToken) {
             this.isAlreadyFetchingAccessToken = true
-            this.refreshToken().then((r) => {
+
+            try {
+              const res = await this.refreshToken()
+              const { accessToken, refreshToken } = res.data as TokenResponse
+
+              this.setToken(accessToken)
+              this.setRefreshToken(refreshToken)
+              this.onAccessTokenFetched(accessToken)
+            } catch (err) {
+              return Promise.reject(err)
+            } finally {
               this.isAlreadyFetchingAccessToken = false
-
-              this.setToken(r.data.accessToken)
-              this.setRefreshToken(r.data.refreshToken)
-
-              this.onAccessTokenFetched(r.data.accessToken)
-            })
+            }
           }
-          const retryOriginalRequest = new Promise((resolve) => {
-            this.addSubscriber((accessToken: any) => {
-              originalRequest.headers.Authorization = `${this.jwtConfig.tokenType} ${accessToken}`
+
+          return new Promise<AxiosResponse>((resolve) => {
+            this.addSubscriber((accessToken: string) => {
+              if (originalRequest.headers) {
+                originalRequest.headers.Authorization = `${this.jwtConfig.tokenType} ${accessToken}`
+              }
               resolve(axios(originalRequest))
             })
           })
-          return retryOriginalRequest
         }
+
         return Promise.reject(error)
       },
     )
   }
 
-  onAccessTokenFetched(accessToken: any) {
-    this.subscribers = this.subscribers.filter((callback) =>
-      callback(accessToken),
-    )
+  private onAccessTokenFetched(accessToken: string): void {
+    // biome-ignore lint/complexity/noForEach: <explanation>
+    this.subscribers.forEach((callback) => callback(accessToken))
+    this.subscribers = []
   }
 
-  addSubscriber(callback: (accessToken: any) => void) {
+  private addSubscriber(callback: Subscriber): void {
     this.subscribers.push(callback)
   }
 
-  getToken() {
+  getToken(): string | null {
     return localStorage.getItem(this.jwtConfig.storageTokenKeyName)
   }
 
-  getRefreshToken() {
+  getRefreshToken(): string | null {
     return localStorage.getItem(this.jwtConfig.storageRefreshTokenKeyName)
   }
 
-  setToken(value: string) {
+  setToken(value: string): void {
     localStorage.setItem(this.jwtConfig.storageTokenKeyName, value)
   }
 
-  setRefreshToken(value: string) {
+  setRefreshToken(value: string): void {
     localStorage.setItem(this.jwtConfig.storageRefreshTokenKeyName, value)
   }
 
-  login(...args: any[]) {
-    return axios.post(this.jwtConfig.loginEndpoint, ...args)
+  login<T = unknown>(data: T): Promise<AxiosResponse> {
+    return axios.post(this.jwtConfig.loginEndpoint, data)
   }
 
-  register(...args: any[]) {
-    return axios.post(this.jwtConfig.registerEndpoint, ...args)
+  register<T = unknown>(data: T): Promise<AxiosResponse> {
+    return axios.post(this.jwtConfig.registerEndpoint, data)
   }
 
-  refreshToken() {
+  refreshToken(): Promise<AxiosResponse<TokenResponse>> {
     return axios.post(this.jwtConfig.refreshEndpoint, {
       refreshToken: this.getRefreshToken(),
     })

@@ -1,3 +1,4 @@
+import type { NextRequest } from 'next/server'
 import { withAuth } from 'next-auth/middleware'
 import { NextResponse } from 'next/server'
 
@@ -6,7 +7,7 @@ export const config = {
 }
 
 export default withAuth(
-  function middleware(req) {
+  function middleware(_req: NextRequest) {
     return NextResponse.next()
   },
   {

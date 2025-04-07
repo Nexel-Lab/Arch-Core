@@ -2,34 +2,49 @@
 
 import { useReducer, useCallback } from 'react'
 
-const initialState = {
-  past: [],
-  present: null,
-  future: [],
+export type THistoryState<T> = {
+  past: T[]
+  present: T | null
+  future: T[]
 }
 
-const reducer = (state: any, action: any) => {
+type HistoryAction<T> =
+  | { type: 'UNDO' }
+  | { type: 'REDO' }
+  | { type: 'SET'; newPresent: T }
+  | { type: 'CLEAR'; initialPresent: T }
+
+// const initialState = {
+//   past: [],
+//   present: null,
+//   future: [],
+// }
+
+function reducer<T>(
+  state: THistoryState<T>,
+  action: HistoryAction<T>,
+): THistoryState<T> {
   const { past, present, future } = state
   switch (action.type) {
     case 'UNDO': {
+      if (past.length === 0) return state
       const previous = past[past.length - 1]
       const newPast = past.slice(0, past.length - 1)
       return {
         past: newPast,
         present: previous,
-        future: [present, ...future],
+        future: [present as T, ...future],
       }
-      break
     }
     case 'REDO': {
+      if (future.length === 0) return state
       const next = future[0]
       const newFuture = future.slice(1)
       return {
-        past: [...past, present],
+        past: [...past, present as T],
         present: next,
         future: newFuture,
       }
-      break
     }
     case 'SET': {
       const { newPresent } = action
@@ -37,28 +52,31 @@ const reducer = (state: any, action: any) => {
         return state
       }
       return {
-        past: [...past, present],
+        past: present !== null ? [...past, present] : past,
         present: newPresent,
         future: [],
       }
-      break
     }
     case 'CLEAR': {
       const { initialPresent } = action
       return {
-        ...initialState,
+        past: [],
         present: initialPresent,
+        future: [],
       }
-      break
     }
+    default:
+      return state
   }
 }
 
-const useHistory = (initialPresent: any) => {
-  const [state, dispatch] = useReducer(reducer, {
-    ...initialState,
+function useHistory<T>(initialPresent: T) {
+  const [state, dispatch] = useReducer(reducer<T>, {
+    past: [],
     present: initialPresent,
+    future: [],
   })
+
   const canUndo = state.past.length !== 0
   const canRedo = state.future.length !== 0
 
@@ -66,19 +84,22 @@ const useHistory = (initialPresent: any) => {
     if (canUndo) {
       dispatch({ type: 'UNDO' })
     }
-  }, [canUndo, dispatch])
+  }, [canUndo])
+
   const redo = useCallback(() => {
     if (canRedo) {
       dispatch({ type: 'REDO' })
     }
-  }, [canRedo, dispatch])
+  }, [canRedo])
+
   const set = useCallback(
-    (newPresent: any) => dispatch({ type: 'SET', newPresent }),
-    [dispatch],
+    (newPresent: T) => dispatch({ type: 'SET', newPresent }),
+    [],
   )
+
   const clear = useCallback(
     () => dispatch({ type: 'CLEAR', initialPresent }),
-    [dispatch, initialPresent],
+    [initialPresent],
   )
 
   return { state: state.present, set, undo, redo, clear, canUndo, canRedo }

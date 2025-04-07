@@ -1,9 +1,12 @@
 'use client'
 
-import { DependencyList, EffectCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useIsFirstRender } from './useIsFirstRender'
 
-function useUpdateEffect(effect: EffectCallback, deps?: DependencyList) {
+function useUpdateEffect(
+  effect: React.EffectCallback,
+  deps: React.DependencyList = [],
+) {
   const isFirst = useIsFirstRender()
 
   useEffect(() => {
@@ -11,7 +14,7 @@ function useUpdateEffect(effect: EffectCallback, deps?: DependencyList) {
       return effect()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps)
+  }, [isFirst, effect, ...deps])
 }
 
 export { useUpdateEffect }

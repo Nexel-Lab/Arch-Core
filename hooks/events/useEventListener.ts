@@ -1,6 +1,6 @@
 'use client'
 
-import { RefObject, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useIsomorphicLayoutEffect } from '../layouts'
 
 function useEventListener<K extends keyof WindowEventMap>(
@@ -13,19 +13,19 @@ function useEventListener<
 >(
   eventName: K,
   handler: (event: HTMLElementEventMap[K]) => void,
-  element: RefObject<T>,
+  element: React.RefObject<T>,
 ): void
 
 function useEventListener<
   KW extends keyof WindowEventMap,
   KH extends keyof HTMLElementEventMap,
-  T extends HTMLElement | void = void,
+  T extends HTMLElement | null,
 >(
   eventName: KW | KH,
   handler: (
     event: WindowEventMap[KW] | HTMLElementEventMap[KH] | Event,
   ) => void,
-  element?: RefObject<T>,
+  element?: React.RefObject<T>,
 ) {
   // Create a ref that stores handler
   const savedHandler = useRef(handler)
@@ -37,7 +37,7 @@ function useEventListener<
   useEffect(() => {
     // Define the listening target
     const targetElement: T | Window = element?.current || window
-    if (!(targetElement && targetElement.addEventListener)) {
+    if (!(targetElement?.addEventListener)) {
       return
     }
 

@@ -6,7 +6,7 @@ export const config = {
   matcher: ['/app/:path*', '/dashboard/:path*', '/settings/:path*'],
 }
 
-export async function middleware(req: NextRequest) {
+export function middleware(req: NextRequest) {
   const sessionToken =
     req.cookies.get('next-auth.session-token')?.value ||
     req.cookies.get('__Secure-next-auth.session-token')?.value

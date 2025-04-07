@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useCallback } from 'react'
 
-const useAsync = (asyncFunction: () => Promise<any>, immediate = true) => {
+const useAsync = <T>(asyncFunction: () => Promise<T>, immediate = true) => {
   type statusState = 'idle' | 'pending' | 'success' | 'error'
   const [status, setStatus] = useState<statusState>('idle')
-  const [value, setValue] = useState(null)
+  const [value, setValue] = useState<T | null>(null)
   const [error, setError] = useState(null)
 
   const execute = useCallback(() => {
@@ -14,11 +14,11 @@ const useAsync = (asyncFunction: () => Promise<any>, immediate = true) => {
     setError(null)
 
     return asyncFunction()
-      .then((response: any) => {
+      .then((response) => {
         setValue(response)
         setStatus('success')
       })
-      .catch((error: any) => {
+      .catch((error) => {
         setError(error)
         setStatus('error')
       })

@@ -16,12 +16,17 @@ class MiddlewareLogger extends SentryLogger implements IMiddlewareLogger {
     return MiddlewareLogger.instance
   }
   public request(request: NextRequest): void {
+    const ip =
+      request.headers.get('x-forwarded-for')?.split(',')[0] ||
+      request.headers.get('cf-connecting-ip') ||
+      request.headers.get('x-real-ip') ||
+      request.ip
     if (this.isDevelopment) {
       this.debug('Incoming request', {
         method: request.method,
         path: request.nextUrl.pathname,
         userAgent: request.headers.get('user-agent'),
-        ip: request.ip,
+        ip: ip,
       })
     }
   }

@@ -64,7 +64,7 @@ const useAbortController = () => {
  */
 export const fetchWithAbort = async <T>(
   url: string,
-  options: RequestInit = {},
+  options: RequestInit,
   signal: AbortSignal,
 ): Promise<T> => {
   const response = await fetch(url, { ...options, signal })

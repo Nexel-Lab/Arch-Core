@@ -17,7 +17,7 @@ const HtmlFromRawData = memo(({ data }: { data: TRawContent }) => {
     (content: TContent | TTextContent | TImageContent) => {
       if ('text' in content) {
         return content.bold ? (
-          <strong className='text-quaternary-2 dark:text-primary-0 px-0.5 font-semibold'>
+          <strong className='px-0.5 font-semibold text-quaternary-2 dark:text-primary-0'>
             {content.text}
           </strong>
         ) : (
@@ -45,7 +45,7 @@ const HtmlFromRawData = memo(({ data }: { data: TRawContent }) => {
             )
 
           case CONTENT_BLOCK_TYPE.BlockQuote:
-            return <BlockQuote children={children as TTextContent[]} />
+            return <BlockQuote>{children as TTextContent[]}</BlockQuote>
 
           case CONTENT_BLOCK_TYPE.Paragraph:
             return (
@@ -61,7 +61,7 @@ const HtmlFromRawData = memo(({ data }: { data: TRawContent }) => {
           case CONTENT_BLOCK_TYPE.HeadingFour:
           case CONTENT_BLOCK_TYPE.HeadingFive:
           case CONTENT_BLOCK_TYPE.HeadingSix:
-            return <Heading type={type} children={children as TTextContent[]} />
+            return <Heading type={type}>{children as TTextContent[]}</Heading>
 
           default:
             return children.map((child, index) => (

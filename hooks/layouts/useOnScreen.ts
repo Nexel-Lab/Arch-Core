@@ -1,10 +1,9 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import { useState, useEffect } from 'react'
 import type { RefObject } from 'react'
 
-function useOnScreen(ref: RefObject<any>, rootMargin = '0px') {
+function useOnScreen(ref: RefObject<HTMLElement>, rootMargin = '0px') {
   const [isIntersecting, setIntersecting] = useState(false)
   useEffect(() => {
     const observer = new IntersectionObserver(

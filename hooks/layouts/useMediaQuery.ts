@@ -17,6 +17,7 @@ function useMediaQuery(query: string): boolean {
     setMatches(getMatches(query))
   }
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: handleChange changes on every re-render and should not be used as a hook dependency
   useEffect(() => {
     const matchMedia = window.matchMedia(query)
 

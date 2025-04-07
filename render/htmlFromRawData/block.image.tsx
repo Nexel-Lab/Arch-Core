@@ -1,4 +1,4 @@
-import { TImageContent } from './_header'
+import type { TImageContent } from './_header'
 import Image from 'next/image'
 import { memo } from 'react'
 

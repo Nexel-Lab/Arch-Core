@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { TContent, TImageContent, TTextContent } from './_header'
-import { CONTENT_BLOCK } from './_header'
+import type {
+  TContent,
+  TImageContent,
+  TTextContent,
+  CONTENT_BLOCK,
+} from './_header'
 import Image from 'next/image'
 import { cn } from '../../../view/styles'
 
@@ -9,7 +13,7 @@ const Text = ({ block }: { block: TTextContent[] }) => {
     <>
       {block.map(({ text, bold }, i: number) => {
         return bold ? (
-          <strong key={i} className='text-primary px-0.5 font-semibold'>
+          <strong key={i} className='px-0.5 font-semibold text-primary'>
             {text}
           </strong>
         ) : (
@@ -46,22 +50,22 @@ const BlockComponents: BlockComponentsType = {
     </p>
   ),
   'heading-one': ({ block }) => (
-    <h1 className='pt-16 pb-4 text-3xl font-semibold lg:pt-24 lg:text-5xl'>
+    <h1 className='pt-16 pb-4 font-semibold text-3xl lg:pt-24 lg:text-5xl'>
       <Text block={block.children as TTextContent[]} />
     </h1>
   ),
   'heading-two': ({ block }) => (
-    <h2 className='pt-16 pb-4 text-2xl font-semibold lg:pt-24 lg:text-4xl'>
+    <h2 className='pt-16 pb-4 font-semibold text-2xl lg:pt-24 lg:text-4xl'>
       <Text block={block.children as TTextContent[]} />
     </h2>
   ),
   'heading-three': ({ block }) => (
-    <h3 className='pt-16 pb-4 text-xl font-semibold lg:pt-24 lg:text-3xl'>
+    <h3 className='pt-16 pb-4 font-semibold text-xl lg:pt-24 lg:text-3xl'>
       <Text block={block.children as TTextContent[]} />
     </h3>
   ),
   'heading-four': ({ block }) => (
-    <h4 className='py-4 pl-4 text-lg font-semibold lg:py-8 lg:pl-8 lg:text-xl'>
+    <h4 className='py-4 pl-4 font-semibold text-lg lg:py-8 lg:pl-8 lg:text-xl'>
       <Text block={block.children as TTextContent[]} />
     </h4>
   ),
@@ -71,7 +75,7 @@ const BlockComponents: BlockComponentsType = {
     </h5>
   ),
   'heading-six': ({ block }) => (
-    <h6 className='py-8 pl-6 text-xl font-light italic lg:py-16 lg:pl-12 lg:text-3xl lg:leading-10'>
+    <h6 className='py-8 pl-6 font-light text-xl italic lg:py-16 lg:pl-12 lg:text-3xl lg:leading-10'>
       <Text block={block.children as TTextContent[]} />
     </h6>
   ),
@@ -96,11 +100,11 @@ const BlockComponents: BlockComponentsType = {
     ),
   class: ({ block }) => (
     <div className={cn(block.className)}>
-      <HTMLFromRaw raw={block.children as any} />
+      <HTMLFromRaw raw={block.children as TContent[]} />
     </div>
   ),
   'block-quote': ({ block }) => (
-    <blockquote className='border-l-quaternary-2 dark:border-l-primary-0 my-6 rounded-md border-4 border-y-white/0 border-r-white/0 bg-black/5 p-6 text-xl font-light lg:my-12 lg:text-2xl lg:leading-10 dark:bg-black/40'>
+    <blockquote className='my-6 rounded-md border-4 border-y-white/0 border-r-white/0 border-l-quaternary-2 bg-black/5 p-6 font-light text-xl lg:my-12 lg:text-2xl lg:leading-10 dark:border-l-primary-0 dark:bg-black/40'>
       <Text block={block.children as TTextContent[]} />
     </blockquote>
   ),

@@ -1,4 +1,4 @@
-import { env } from '@global/env.mjs'
+import { env } from '@env'
 import { initializeApp } from 'firebase/app'
 
 const firebaseConfig = {
@@ -12,4 +12,4 @@ const firebaseConfig = {
   measurementId: env.FIREBASE_MEASUREMENT_ID,
 }
 
-export const app = initializeApp(firebaseConfig)
+export const firebaseApp = initializeApp(firebaseConfig)

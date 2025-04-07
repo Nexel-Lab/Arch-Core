@@ -13,7 +13,7 @@ const useAcceptCookies = (name?: string) => {
     if (!Cookies.get(COOKIE_NAME)) {
       setAcceptedCookies(false)
     }
-  }, [])
+  }, [COOKIE_NAME])
 
   const acceptCookies = () => {
     setAcceptedCookies(true)

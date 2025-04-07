@@ -33,7 +33,7 @@ function useReadLocalStorage<T>(key: string): Value<T> {
   useEffect(() => {
     setStoredValue(readValue())
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [readValue])
 
   const handleStorageChange = useCallback(() => {
     setStoredValue(readValue())

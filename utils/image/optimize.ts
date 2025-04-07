@@ -23,7 +23,7 @@ const optimizeAndConvertToJpg = async (
       .toBuffer()
 
     return jpegBuffer
-  } catch (error) {
+  } catch (_error) {
     throw new Error('Error while optimizing and converting to JPEG')
   }
 }
@@ -49,7 +49,7 @@ const optimizeAndConvertToPng = async (
       .toBuffer()
 
     return jpegBuffer
-  } catch (error) {
+  } catch (_error) {
     throw new Error('Error while optimizing and converting to PNG')
   }
 }

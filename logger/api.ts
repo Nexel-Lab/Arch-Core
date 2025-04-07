@@ -1,6 +1,7 @@
+import type { IRequestContext } from './_header'
+import { SEVERITY_LEVEL } from './_header'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { SentryLogger } from './implement'
-import { IRequestContext, SEVERITY_LEVEL } from './_header'
 
 class ApiLogger extends SentryLogger {
   private constructor() {
@@ -14,7 +15,7 @@ class ApiLogger extends SentryLogger {
     return ApiLogger._instance as ApiLogger
   }
 
-  public request(req: NextApiRequest, res?: NextApiResponse): void {
+  public request(req: NextApiRequest, _res?: NextApiResponse): void {
     const requestContext = this.buildRequestContext(req)
 
     // Set request context for Sentry

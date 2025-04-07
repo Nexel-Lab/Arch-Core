@@ -1,6 +1,7 @@
 'use client'
 
-import { RefObject, useState } from 'react'
+import type { RefObject } from 'react'
+import { useState } from 'react'
 import { useEventListener } from './useEventListener'
 
 function useHover<T extends HTMLElement = HTMLElement>(

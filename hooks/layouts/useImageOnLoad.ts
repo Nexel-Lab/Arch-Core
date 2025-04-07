@@ -1,10 +1,10 @@
 'use client'
 
-import { CSSProperties, useState } from 'react'
+import { useState } from 'react'
 
 interface ImageStyle {
-  thumbnail: CSSProperties
-  fullSize: CSSProperties
+  thumbnail: React.CSSProperties
+  fullSize: React.CSSProperties
 }
 
 interface ImageOnLoadType {

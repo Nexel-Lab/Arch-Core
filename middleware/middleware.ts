@@ -16,6 +16,12 @@ export async function middleware(request: NextRequest) {
   const response = NextResponse.next()
   const requestStartTime = Date.now()
 
+  const ip =
+    request.headers.get('x-forwarded-for')?.split(',')[0] ||
+    request.headers.get('cf-connecting-ip') ||
+    request.headers.get('x-real-ip') ||
+    request.ip
+
   try {
     // applySecurityHeaders(response)
     const pathname = request.nextUrl.pathname
@@ -38,8 +44,8 @@ export async function middleware(request: NextRequest) {
       return new NextResponse('Unauthorized', { status: 403 })
     }
 
-    if (request.ip && protectedRoute.rateLimit) {
-      const rateLimited = checkRateLimit(request.ip, protectedRoute.rateLimit)
+    if (ip && protectedRoute.rateLimit) {
+      const rateLimited = checkRateLimit(ip, protectedRoute.rateLimit)
       if (rateLimited) {
         return new NextResponse('Too Many Requests', { status: 429 })
       }

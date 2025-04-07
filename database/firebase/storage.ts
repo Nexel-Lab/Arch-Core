@@ -1,15 +1,18 @@
-import { getStorage, ref, getDownloadURL } from 'firebase/storage'
-import { app } from './initialize'
+import { getStorage, ref, getDownloadURL, uploadBytes } from 'firebase/storage'
+import { firebaseApp as app } from './initialize'
 
-const storageInstance = getStorage(app)
+export const storageInstance = getStorage(app)
 
-const getFile = async (fileName: string | undefined, folderName?: string) => {
+export const getFile = async (
+  fileName: string | undefined,
+  folderName?: string,
+) => {
   const dbPath =
     fileName && folderName
-      ? folderName + '/' + fileName
+      ? `${folderName}/${fileName}`
       : !folderName && fileName
-      ? fileName
-      : ''
+        ? fileName
+        : ''
   const storageRef = ref(storageInstance, dbPath)
   try {
     const imgUrl = await getDownloadURL(storageRef)
@@ -33,7 +36,32 @@ const getFile = async (fileName: string | undefined, folderName?: string) => {
   }
 }
 
-export const storage = {
-  getInstance: storageInstance,
-  getFile,
+export interface IFile {
+  file: File
+  fileName: string
+  folderName?: string
+}
+
+export const putFile = async ({ file, fileName, folderName }: IFile) => {
+  const dbPath = folderName ? `${folderName}/${fileName}` : fileName
+  const storageRef = ref(storageInstance, dbPath)
+  try {
+    const uploadFileResponse = await uploadBytes(storageRef, file)
+    if (!uploadFileResponse) {
+      return {
+        success: false,
+        message: 'upload fail',
+      }
+    }
+    return {
+      success: true,
+      metadata: uploadFileResponse.metadata,
+    }
+  } catch (err) {
+    console.error(err)
+    return {
+      success: false,
+      message: 'database connection failed',
+    }
+  }
 }

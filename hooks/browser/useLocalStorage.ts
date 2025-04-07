@@ -1,12 +1,6 @@
 'use client'
 
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 // See: https://usehooks-ts.com/react-hook/use-event-listener
 import { useEventListener } from '../events/useEventListener'
@@ -17,7 +11,7 @@ declare global {
   }
 }
 
-type SetValue<T> = Dispatch<SetStateAction<T>>
+type SetValue<T> = React.Dispatch<React.SetStateAction<T>>
 
 // A wrapper for "JSON.parse()"" to support "undefined" value
 function parseJSON<T>(value: string | null): T | undefined {
@@ -56,7 +50,7 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
   const setValue: SetValue<T> = useCallback(
     (value) => {
       // Prevent build error "window is undefined" but keeps working
-      if (typeof window == 'undefined') {
+      if (typeof window === 'undefined') {
         console.warn(
           `Tried setting localStorage key “${key}” even though environment is not a client`,
         )
@@ -84,7 +78,7 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
   useEffect(() => {
     setStoredValue(readValue())
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [readValue])
 
   const handleStorageChange = useCallback(() => {
     setStoredValue(readValue())

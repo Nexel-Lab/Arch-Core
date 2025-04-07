@@ -1,4 +1,4 @@
-import { TTextContent } from './_header'
+import type { TTextContent } from './_header'
 import { memo, Fragment } from 'react'
 
 const Text = memo(({ block }: { block: TTextContent[] }) => {
@@ -7,7 +7,7 @@ const Text = memo(({ block }: { block: TTextContent[] }) => {
       {block.map(({ text, bold }, i) => (
         <Fragment key={`text-${i}`}>
           {bold ? (
-            <strong className='text-primary px-0.5 font-semibold'>
+            <strong className='px-0.5 font-semibold text-primary'>
               {text}
             </strong>
           ) : (

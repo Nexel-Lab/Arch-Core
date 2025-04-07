@@ -22,7 +22,7 @@ interface UseFormProps<T extends FormData> {
   onInit?: () => Promise<void> | void
   onSubmit: (data: T, event: FormEvent) => Promise<void>
   onError?: (error: FormError) => void
-  validate?: (data: T) => Promise<FormError[]> | FormError[] | void
+  validate?: (data: T) => Promise<FormError[]> | FormError[]
   resetOnSubmit?: boolean
 }
 
@@ -80,7 +80,7 @@ export function useForm<T extends FormData>({
     }
 
     initForm()
-  }, [onInit])
+  }, [onInit, onError])
 
   const setFieldValue = useCallback((name: keyof T, value: FormValue) => {
     setFormData((prev) => ({

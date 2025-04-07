@@ -1,3 +1,4 @@
+import type { TSession } from 'types'
 import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { uuidv7 } from 'uuidv7'
@@ -6,7 +7,7 @@ import { setResponse } from '../../utils/server/response.status'
 
 export const presignedRoute = async (
   req: Request,
-  session: Record<string, any> | null,
+  session: TSession | null,
 ) => {
   if (!session || !session.user || !session.user.id) {
     return setResponse.unauthorized()
@@ -19,17 +20,20 @@ export const presignedRoute = async (
     const { searchParams } = new URL(req.url)
     const _dir = searchParams.get('dir')
     const _bucketSuffix = searchParams.get('bucketSuffix')
+    if (!_dir || !_bucketSuffix) {
+      return setResponse.badRequest()
+    }
 
     const imageId = uuidv7()
 
     const key = `${_dir}.${imageId}.jpg`
 
     const bucketName = _bucketSuffix
-      ? process.env.S3_UPLOAD_BUCKET + '.' + _bucketSuffix
+      ? `${process.env.S3_UPLOAD_BUCKET}.${_bucketSuffix}`
       : process.env.S3_UPLOAD_BUCKET
 
     const url = await s3.getPutUrl({
-      bucket: bucketName!,
+      bucket: bucketName ?? '',
       key,
       fileInfo: {
         ...(_fileType && { contentType: _fileType }),

@@ -2,11 +2,16 @@
 
 import { useState, useMemo } from 'react'
 
-const useSortableData = (items: any[] | [], config: any = null) => {
-  const [sortConfig, setSortConfig] = useState(config)
+type SortConfig<T> = {
+  key: keyof T
+  direction: 'ascending' | 'descending'
+}
+
+function useSortableData<T>(items: T[], config: SortConfig<T> | null = null) {
+  const [sortConfig, setSortConfig] = useState<SortConfig<T> | null>(config)
 
   const sortedItems = useMemo(() => {
-    const sortableItems: any[] = [...items]
+    const sortableItems: T[] = [...items]
     if (sortConfig !== null) {
       sortableItems.sort((a, b) => {
         if (a[sortConfig.key] < b[sortConfig.key]) {
@@ -21,8 +26,8 @@ const useSortableData = (items: any[] | [], config: any = null) => {
     return sortableItems
   }, [items, sortConfig])
 
-  const requestSort = (key: any) => {
-    let direction = 'ascending'
+  function requestSort(key: keyof T) {
+    let direction: 'ascending' | 'descending' = 'ascending'
     if (
       sortConfig &&
       sortConfig.key === key &&

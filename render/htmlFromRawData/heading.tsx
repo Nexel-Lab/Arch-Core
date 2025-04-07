@@ -1,4 +1,4 @@
-import { TTextContent, HEADING_STYLES } from './_header'
+import { type TTextContent, HEADING_STYLES } from './_header'
 import { memo } from 'react'
 import { Text } from './text'
 

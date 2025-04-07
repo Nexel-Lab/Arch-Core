@@ -52,7 +52,7 @@ const createHistoryStore = <T>(initialPresent: T) => {
     },
 
     redo: () => {
-      const { past, present, future } = get()
+      const { present, future } = get()
       if (future.length === 0) return
 
       const next = future[0]

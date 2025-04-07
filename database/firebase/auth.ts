@@ -1,11 +1,6 @@
 import { getAuth } from 'firebase/auth'
-import { app } from './initialize'
-import { useAuth } from './authContext'
+import { firebaseApp as app } from './initialize'
 
 export const authInstance = getAuth(app)
-
-export { AuthProvider } from './authProvider'
-export const auth = {
-  getInstance: authInstance,
-  useAuth,
-}
+export { useFirebaseAuth } from './auth.management'
+export { useAuthStore } from './auth.store'

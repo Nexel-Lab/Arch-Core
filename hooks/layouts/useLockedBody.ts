@@ -45,7 +45,7 @@ function useLockedBody(initialLocked = false): ReturnType {
       setLocked(initialLocked)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialLocked])
+  }, [initialLocked, locked])
 
   return [locked, setLocked]
 }

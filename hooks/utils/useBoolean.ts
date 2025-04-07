@@ -1,10 +1,10 @@
 'use client'
 
-import { Dispatch, SetStateAction, useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 interface ReturnType {
   value: boolean
-  setValue: Dispatch<SetStateAction<boolean>>
+  setValue: React.Dispatch<React.SetStateAction<boolean>>
   setTrue: () => void
   setFalse: () => void
   toggle: () => void

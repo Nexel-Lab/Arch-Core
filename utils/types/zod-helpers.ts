@@ -1,4 +1,4 @@
-import { z, ZodNumber, ZodArray } from 'zod'
+import { z, type ZodNumber, type ZodArray } from 'zod'
 import {
   parseNumericString,
   parseNumericStringArray,

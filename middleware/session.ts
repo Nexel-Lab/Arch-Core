@@ -6,6 +6,11 @@ import { getPermissionsByRoleAndPlan } from './session.utils'
 const validateSession = async (
   request: NextRequest,
 ): Promise<MiddlewareSessionData | null> => {
+  const ip =
+    request.headers.get('x-forwarded-for')?.split(',')[0] ||
+    request.headers.get('cf-connecting-ip') ||
+    request.headers.get('x-real-ip') ||
+    request.ip
   try {
     const sessionToken =
       request.cookies.get('next-auth.session-token')?.value ||
@@ -57,7 +62,7 @@ const validateSession = async (
       .update({
         where: { id: session.id },
         data: {
-          ipAddress: request.ip,
+          ipAddress: ip,
           userAgent: request.headers.get('user-agent') || undefined,
         },
       })

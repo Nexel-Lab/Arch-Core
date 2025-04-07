@@ -17,12 +17,12 @@ export function formatBytes(bytes: number, decimals = 2) {
   const i = Math.floor(Math.log(bytes) / Math.log(KB))
 
   return (
-    parseFloat((bytes / Math.pow(KB, i)).toFixed(decimals)) + ' ' + sizes[i]
+    `${Number.parseFloat((bytes / KB ** i).toFixed(decimals))} ${sizes[i]}`
   )
 }
 
 export function formatToLeastDecimals(value: number, decimals = 2) {
-  return parseFloat(value.toFixed(decimals))
+  return Number.parseFloat(value.toFixed(decimals))
 }
 
 export function formatSeconds(seconds: number) {
@@ -44,7 +44,7 @@ export function formatSeconds(seconds: number) {
     unit = units[i]
     unitCount = Math.floor(seconds / unit.in_seconds)
     if (unitCount >= 1) {
-      output += ' ' + unitCount + ' ' + unit.name + (unitCount > 1 ? 's' : '')
+      output += ` ${unitCount} ${unit.name}${unitCount > 1 ? 's' : ''}`
       seconds -= unitCount * unit.in_seconds
     }
   }
@@ -75,13 +75,13 @@ export function getRandomInt(min: number, max: number) {
 
 export function numberWithCommas(value: number | string | undefined) {
   return value &&
-    !Number.isNaN(typeof value === 'string' ? parseFloat(value) : value)
+    !Number.isNaN(typeof value === 'string' ? Number.parseFloat(value) : value)
     ? `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     : ''
 }
 
 export function isNumeric(value?: unknown) {
-  return !isNaN(Number(value))
+  return !Number.isNaN(Number(value))
 }
 
 export const findClosest = (array: number[], target: number) => {

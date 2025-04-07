@@ -1,6 +1,6 @@
 const trpcResponse = {
-  fail: (message: string, error?: any) => {
-    let errorMessage: string = ''
+  fail: (message: string, error?: unknown) => {
+    let errorMessage = ''
     if (
       typeof error === 'object' &&
       error &&
@@ -20,8 +20,8 @@ const trpcResponse = {
   success: (message: string, data?: { data?: any; metadata?: any }) => ({
     success: true,
     message,
-    ...(data && data.data && { data: data.data }),
-    ...(data && data.metadata && { _metaData: data.metadata }),
+    ...(data?.data && { data: data.data }),
+    ...(data?.metadata && { _metaData: data.metadata }),
   }),
 }
 

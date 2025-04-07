@@ -12,7 +12,7 @@ export const getMetadata = (metaData: {
 }): Metadata => ({
   metadataBase: new URL(metaData.url),
   title: {
-    template: '%s | ' + metaData.appName,
+    template: `%s | ${metaData.appName}`,
     default: metaData.title,
   },
   description: metaData.description,
@@ -29,7 +29,7 @@ export const getMetadata = (metaData: {
   manifest: '/manifest.json',
   openGraph: {
     title: {
-      template: '%s | ' + metaData.appName,
+      template: `%s | ${metaData.appName}`,
       default: metaData.title,
     },
     siteName: metaData.appName,
@@ -48,7 +48,7 @@ export const getMetadata = (metaData: {
   twitter: {
     card: 'summary_large_image',
     title: {
-      template: '%s | ' + metaData.appName,
+      template: `%s | ${metaData.appName}`,
       default: metaData.title,
     },
     description: metaData.description,

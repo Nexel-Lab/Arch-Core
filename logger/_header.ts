@@ -3,7 +3,9 @@ import type { SeverityLevel } from '@sentry/types'
 
 export type TSeverityLevel = SeverityLevel
 
-export type TLogData = Record<string, any>
+export interface ILogData extends Record<string, unknown> {
+  level?: TSeverityLevel
+}
 
 export enum SEVERITY_LEVEL {
   FATAL = 'fatal',
@@ -24,10 +26,10 @@ export interface IRequestContext extends Record<string, unknown> {
 }
 
 export interface ILogger {
-  debug(message: string, data?: TLogData): void
-  info(message: string, data?: TLogData): void
-  warn(message: string, data?: TLogData): void
-  error(message: string, error: Error | unknown, extra?: TLogData): void
+  debug(message: string, data?: ILogData): void
+  info(message: string, data?: ILogData): void
+  warn(message: string, data?: ILogData): void
+  error(message: string, error: Error | unknown, extra?: ILogData): void
 }
 
 export interface IMiddlewareLogger extends ILogger {

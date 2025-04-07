@@ -1,13 +1,5 @@
-import { app } from './initialize'
-import { database } from './database'
-import { storage } from './storage'
-import { firestore } from './firestore'
-import { auth } from './auth'
-
-export const firebase = {
-  app,
-  database,
-  storage,
-  firestore,
-  auth,
-}
+export { firebaseApp } from './initialize'
+export { authInstance, useFirebaseAuth, useAuthStore } from './auth'
+export { databaseInstance, findOne, findAll } from './database'
+export { firestoreInstance } from './firestore'
+export { storageInstance, getFile, putFile } from './storage'

@@ -76,11 +76,11 @@ export const usePresignedS3Upload = (
    */
   const resetFiles = useCallback(() => {
     // Abort any in-progress uploads before resetting
-    files.forEach((file) => {
+    for (const file of files) {
       if (file.status === UPLOAD_STATUS.UPLOADING) {
         file.abort()
       }
-    })
+    }
     uploadsInProgress.current.clear()
     setFiles([])
   }, [files])
@@ -224,7 +224,10 @@ export const usePresignedS3Upload = (
               if (xhr.status >= 200 && xhr.status < 300) {
                 updateFile(id, { status: UPLOAD_STATUS.SUCCESS, progress: 100 })
                 uploadsInProgress.current.delete(id)
-                onUploadSuccess?.(getFileById(id)!)
+                const fileById = getFileById(id)
+                if (fileById) {
+                  onUploadSuccess?.(fileById)
+                }
                 resolve(true)
               } else {
                 const errorMsg = `Upload failed with status ${xhr.status}: ${xhr.statusText}`

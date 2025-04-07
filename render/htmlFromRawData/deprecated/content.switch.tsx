@@ -1,4 +1,9 @@
-import { TContent, TImageContent, TTextContent, TRawContent } from './_header'
+import type {
+  TContent,
+  TImageContent,
+  TTextContent,
+  TRawContent,
+} from './_header'
 import React from 'react'
 import Image from 'next/image'
 import { cn } from '../../../view/styles'
@@ -7,13 +12,14 @@ const renderContent = (content: TContent | TTextContent | TImageContent) => {
   if ('text' in content) {
     // Handle TextContent
     return content.bold ? (
-      <strong className='text-quaternary-2 dark:text-primary-0 px-0.5 font-semibold'>
+      <strong className='px-0.5 font-semibold text-quaternary-2 dark:text-primary-0'>
         {content.text}
       </strong>
     ) : (
       content.text
     )
-  } else if ('src' in content) {
+  }
+  if ('src' in content) {
     // Handle ImageContent
     return (
       <div className='flex w-full justify-center py-8'>
@@ -32,7 +38,8 @@ const renderContent = (content: TContent | TTextContent | TImageContent) => {
         />
       </div>
     )
-  } else if ('type' in content) {
+  }
+  if ('type' in content) {
     // Handle Content
     const { type, children } = content
     switch (type) {
@@ -48,7 +55,7 @@ const renderContent = (content: TContent | TTextContent | TImageContent) => {
         )
       case 'heading-one':
         return (
-          <h1 className='pt-16 pb-4 text-3xl font-semibold lg:pt-24 lg:text-5xl'>
+          <h1 className='pt-16 pb-4 font-semibold text-3xl lg:pt-24 lg:text-5xl'>
             {children.map((child, index) => (
               <React.Fragment key={index}>
                 {renderContent(child)}
@@ -58,7 +65,7 @@ const renderContent = (content: TContent | TTextContent | TImageContent) => {
         )
       case 'heading-two':
         return (
-          <h2 className='pt-16 pb-4 text-2xl font-semibold lg:pt-24 lg:text-4xl'>
+          <h2 className='pt-16 pb-4 font-semibold text-2xl lg:pt-24 lg:text-4xl'>
             {children.map((child, index) => (
               <React.Fragment key={index}>
                 {renderContent(child)}
@@ -68,7 +75,7 @@ const renderContent = (content: TContent | TTextContent | TImageContent) => {
         )
       case 'heading-three':
         return (
-          <h3 className='text-1xl pt-16 pb-4 font-semibold lg:pt-24 lg:text-3xl'>
+          <h3 className='pt-16 pb-4 font-semibold text-1xl lg:pt-24 lg:text-3xl'>
             {children.map((child, index) => (
               <React.Fragment key={index}>
                 {renderContent(child)}
@@ -78,7 +85,7 @@ const renderContent = (content: TContent | TTextContent | TImageContent) => {
         )
       case 'heading-four':
         return (
-          <h4 className='py-4 pl-4 text-lg font-semibold lg:py-8 lg:pl-8 lg:text-xl'>
+          <h4 className='py-4 pl-4 font-semibold text-lg lg:py-8 lg:pl-8 lg:text-xl'>
             {children.map((child, index) => (
               <React.Fragment key={index}>
                 {renderContent(child)}
@@ -98,7 +105,7 @@ const renderContent = (content: TContent | TTextContent | TImageContent) => {
         )
       case 'heading-six':
         return (
-          <h6 className='py-8 pl-6 text-xl font-light italic lg:py-16 lg:pl-12 lg:text-3xl lg:leading-10'>
+          <h6 className='py-8 pl-6 font-light text-xl italic lg:py-16 lg:pl-12 lg:text-3xl lg:leading-10'>
             {children.map((child, index) => (
               <React.Fragment key={index}>
                 {renderContent(child)}
@@ -118,7 +125,7 @@ const renderContent = (content: TContent | TTextContent | TImageContent) => {
         )
       case 'block-quote':
         return (
-          <blockquote className='border-l-quaternary-2 dark:border-l-primary-0 my-6 rounded-md border-4 border-y-white/0 border-r-white/0 bg-black/5 p-6 text-xl font-light lg:my-12 lg:text-2xl lg:leading-10 dark:bg-black/40'>
+          <blockquote className='my-6 rounded-md border-4 border-y-white/0 border-r-white/0 border-l-quaternary-2 bg-black/5 p-6 font-light text-xl lg:my-12 lg:text-2xl lg:leading-10 dark:border-l-primary-0 dark:bg-black/40'>
             {children.map((child, index) => (
               <React.Fragment key={index}>
                 {renderContent(child)}
@@ -131,9 +138,8 @@ const renderContent = (content: TContent | TTextContent | TImageContent) => {
           <React.Fragment key={index}>{renderContent(child)}</React.Fragment>
         ))
     }
-  } else {
-    return null
   }
+  return null
 }
 
 interface HTMLFromRawProps {

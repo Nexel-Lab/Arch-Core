@@ -1,6 +1,6 @@
+import type { SuperJSONResult } from 'superjson'
 import { useMemo } from 'react'
 import superjson from 'superjson'
-import { SuperJSONResult } from 'superjson/dist/types'
 
 const symbol = Symbol('__RSC_DATA__')
 

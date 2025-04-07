@@ -1,4 +1,4 @@
-import type { TSeverityLevel, TLogData, IRequestContext } from '../_header'
+import type { TSeverityLevel, ILogData, IRequestContext } from '../_header'
 import { SEVERITY_LEVEL } from '../_header'
 import type { Scope } from '@sentry/nextjs'
 import {
@@ -36,7 +36,7 @@ export class SentryLogger extends BaseLogger {
   public captureWithLevel(
     error: Error,
     level: TSeverityLevel,
-    extra?: TLogData,
+    extra?: ILogData,
   ): void {
     withScope((scope) => {
       scope.setLevel(level)
@@ -49,7 +49,7 @@ export class SentryLogger extends BaseLogger {
   protected logToSystem(
     level: TSeverityLevel,
     message: string,
-    data?: TLogData,
+    data?: ILogData,
   ): void {
     if (this.isDevelopment) {
       this.logToDevelopment(level, data)
@@ -61,7 +61,7 @@ export class SentryLogger extends BaseLogger {
     }
   }
 
-  private logToDevelopment(level: TSeverityLevel, data?: TLogData): void {
+  private logToDevelopment(level: TSeverityLevel, data?: ILogData): void {
     const logData = {
       timestamp: new Date().toISOString(),
       ...this.currentContext,
@@ -86,7 +86,7 @@ export class SentryLogger extends BaseLogger {
     }
   }
 
-  private logToProduction(message: string, data?: TLogData): void {
+  private logToProduction(message: string, data?: ILogData): void {
     withScope((scope) => {
       this.configureScopeWithDefaults(scope)
       // scope.setTag('environment', process.env.NODE_ENV)
@@ -112,14 +112,14 @@ export class SentryLogger extends BaseLogger {
     })
   }
 
-  protected configureSentry(error: Error, extra?: TLogData): void {
+  protected configureSentry(error: Error, extra?: ILogData): void {
     this.withScope((scope) => {
       this.configureScopeWithDefaults(scope)
 
       setTag('errorType', error.name)
 
       if (extra?.userId) {
-        setUser({ id: extra.userId })
+        setUser({ id: extra.userId as string | number })
       }
 
       if (extra) {
@@ -169,7 +169,7 @@ export class SentryLogger extends BaseLogger {
     setTag(key, value)
   }
 
-  public setUser(id: string, data?: Record<string, any>): void {
+  public setUser(id: string, data?: Record<string, unknown>): void {
     setUser({
       id,
       ...data,

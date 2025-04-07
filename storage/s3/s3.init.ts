@@ -10,7 +10,7 @@ const missingEnvs = (): string[] => {
   return keys
 }
 
-const getS3Client = async (): Promise<S3Client> => {
+const getS3Client = (): S3Client => {
   const missing = missingEnvs()
   if (missing.length > 0)
     throw new Error(`S3Client: Missing ENVs ${missing.join(', ')}`)
@@ -29,6 +29,6 @@ const globalForS3 = globalThis as unknown as {
   s3?: S3Client
 }
 
-const s3 = globalForS3.s3 ?? (globalForS3.s3 = await getS3Client())
+const s3 = globalForS3.s3 ?? (globalForS3.s3 = getS3Client())
 
 export { s3 }

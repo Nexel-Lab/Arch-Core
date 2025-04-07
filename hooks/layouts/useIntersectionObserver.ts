@@ -23,6 +23,7 @@ function useIntersectionObserver(
     setEntry(entry)
   }
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: updateEntry changes on every re-render and should not be used as a hook dependency
   useEffect(() => {
     const node = elementRef?.current // DOM Ref
     const hasIOSupport = !!window.IntersectionObserver
@@ -37,7 +38,14 @@ function useIntersectionObserver(
     return () => observer.disconnect()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [elementRef, JSON.stringify(threshold), root, rootMargin, frozen])
+  }, [
+    elementRef,
+    JSON.stringify(threshold),
+    root,
+    rootMargin,
+    frozen,
+    threshold,
+  ])
 
   return entry
 }

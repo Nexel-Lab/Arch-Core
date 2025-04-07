@@ -1,9 +1,35 @@
 'use client'
 
-import { useReducer, useEffect } from 'react'
+import { useEffect, useReducer } from 'react'
+import type {
+  DocumentData,
+  Query,
+  QuerySnapshot,
+  DocumentSnapshot,
+} from 'firebase/firestore'
+import { onSnapshot } from 'firebase/firestore'
 import { useMemoCompare } from '../utils/useMemoCompare'
 
-const reducer = (state: any, action: any) => {
+// --- Types ---
+type FirestoreStatus = 'idle' | 'loading' | 'success' | 'error'
+
+interface FirestoreState<T> {
+  status: FirestoreStatus
+  data?: T | T[] | null
+  error?: Error
+}
+
+type FirestoreAction<T> =
+  | { type: 'idle' }
+  | { type: 'loading' }
+  | { type: 'success'; payload: T | T[] | null }
+  | { type: 'error'; payload: Error }
+
+// --- Reducer ---
+function reducer<T>(
+  _state: FirestoreState<T>,
+  action: FirestoreAction<T>,
+): FirestoreState<T> {
   switch (action.type) {
     case 'idle':
       return { status: 'idle', data: undefined, error: undefined }
@@ -14,48 +40,66 @@ const reducer = (state: any, action: any) => {
     case 'error':
       return { status: 'error', data: undefined, error: action.payload }
     default:
-      throw new Error('invalid action')
+      throw new Error('Invalid action type')
   }
 }
 
-function useFirestoreQuery(query: any) {
-  const initialState = {
+// --- Hook ---
+function useFirestoreQuery<T = DocumentData>(
+  query: Query<DocumentData> | DocumentSnapshot<DocumentData> | null,
+) {
+  const initialState: FirestoreState<T | T[]> = {
     status: query ? 'loading' : 'idle',
     data: undefined,
     error: undefined,
   }
 
-  const [state, dispatch] = useReducer(reducer, initialState)
-  const queryCached = useMemoCompare(query, (prevQuery) => {
-    return prevQuery && query && query.isEqual(prevQuery)
-  })
+  const [state, dispatch] = useReducer(reducer<T | T[]>, initialState)
+
+  const queryCached = useMemoCompare(
+    query,
+    (prevQuery) =>
+      prevQuery && query && 'isEqual' in query && query.isEqual(prevQuery),
+  )
+
   useEffect(() => {
     if (!queryCached) {
       dispatch({ type: 'idle' })
       return
     }
+
     dispatch({ type: 'loading' })
 
-    return queryCached.onSnapshot(
-      (response: any) => {
-        const data = response.docs
-          ? getCollectionData(response)
-          : getDocData(response)
+    const unsubscribe = onSnapshot(
+      queryCached as any,
+      (
+        snapshot: QuerySnapshot<DocumentData> | DocumentSnapshot<DocumentData>,
+      ) => {
+        const data =
+          'docs' in snapshot
+            ? getCollectionData<T>(snapshot)
+            : getDocData<T>(snapshot)
+
         dispatch({ type: 'success', payload: data })
       },
       (error: Error) => {
         dispatch({ type: 'error', payload: error })
       },
     )
+
+    return unsubscribe
   }, [queryCached])
+
   return state
 }
-function getDocData(doc: any) {
-  return doc.exists === true ? { id: doc.id, ...doc.data() } : null
+
+// --- Helpers ---
+function getDocData<T>(doc: DocumentSnapshot<DocumentData>): T | null {
+  return doc.exists() ? ({ id: doc.id, ...doc.data() } as T) : null
 }
 
-function getCollectionData(collection: any) {
-  return collection.docs.map(getDocData)
+function getCollectionData<T>(collection: QuerySnapshot<DocumentData>): T[] {
+  return collection.docs.map(getDocData).filter(Boolean) as T[]
 }
 
 export { useFirestoreQuery }

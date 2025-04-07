@@ -1,5 +1,5 @@
-const getErrorMessage = (e: any) => {
-  let message: string = 'Database connection failed'
+const getErrorMessage = (e: unknown) => {
+  let message = 'Database connection failed'
   if (
     typeof e === 'object' &&
     e &&

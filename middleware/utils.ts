@@ -22,6 +22,11 @@ export function logRequest(
   sessionData: MiddlewareSessionData | null,
 ) {
   if (process.env.NODE_ENV === 'development') {
+    const ip =
+      request.headers.get('x-forwarded-for')?.split(',')[0] ||
+      request.headers.get('cf-connecting-ip') ||
+      request.headers.get('x-real-ip') ||
+      request.ip
     console.log({
       timestamp: new Date().toISOString(),
       method: request.method,
@@ -29,13 +34,18 @@ export function logRequest(
       userId: sessionData?.userId,
       role: sessionData?.role,
       userAgent: request.headers.get('user-agent'),
-      ip: request.ip || null,
+      ip: ip,
     })
   }
 }
 
-export function logError(error: any, request: NextRequest) {
+export function logError(error: Error, request: NextRequest) {
   if (process.env.NODE_ENV === 'development') {
+    const ip =
+      request.headers.get('x-forwarded-for')?.split(',')[0] ||
+      request.headers.get('cf-connecting-ip') ||
+      request.headers.get('x-real-ip') ||
+      request.ip
     console.error({
       timestamp: new Date().toISOString(),
       error: error.message,
@@ -43,7 +53,7 @@ export function logError(error: any, request: NextRequest) {
       path: request.nextUrl.pathname,
       method: request.method,
       userAgent: request.headers.get('user-agent'),
-      ip: request.ip,
+      ip: ip,
     })
   } else {
     // In production, log less detailed error info

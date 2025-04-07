@@ -2,8 +2,16 @@
 
 import { useState, useEffect } from 'react'
 
+type TMousePosition = {
+  x: number | null
+  y: number | null
+  movementX: number | null
+  movementY: number | null
+  scrollY: number | null
+}
+
 function useMouseTrack() {
-  const [mousePosition, setMousePosition] = useState<any>({
+  const [mousePosition, setMousePosition] = useState<TMousePosition>({
     x: null,
     y: null,
     movementX: null,
@@ -12,7 +20,7 @@ function useMouseTrack() {
   })
 
   useEffect(() => {
-    function handle(e: any) {
+    function handle(e: MouseEvent) {
       setMousePosition({
         x: e.pageX,
         y: e.pageY,
