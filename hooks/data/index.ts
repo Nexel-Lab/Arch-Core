@@ -1,4 +1,4 @@
 export { useFetch } from './useFetch'
 export { useFetchQL } from './useFetchQL'
-export { useFirestoreQuery } from './useFirestoreQuery'
+// export { useFirestoreQuery } from './useFirestoreQuery'
 export { useSortableData } from './useSortableData'
