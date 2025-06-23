@@ -1,4 +1,4 @@
-import type { MiddlewareRouteConfig } from '@core/middleware'
+import type { MiddlewareRouteConfig } from '#core/middleware'
 import type { UserRole } from '@prisma/client'
 import { TIME_CONSTANTS } from '@constants'
 
