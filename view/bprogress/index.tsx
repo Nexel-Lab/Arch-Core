@@ -8,7 +8,7 @@ export const Progress = ({
 }: {
   color: { light: string; dark: string }
 }) => {
-  const _dark = useUiState((st) => st.dark)
+  const _dark = useUiState((st) => st.isDark)
   return (
     <BProgress
       color={_dark ? color.dark : color.light}

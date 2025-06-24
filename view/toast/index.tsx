@@ -19,10 +19,11 @@ const Toast = () => {
 
   return (
     <ToastContainer
-      position='top-right'
+      closeButton={ToastCloseButton}
       // newestOnTop
       // stacked
       // theme='dark'
+      position='top-right'
       toastClassName={
         ((context) => {
           if (context?.type && context?.defaultClassName) {
@@ -34,7 +35,6 @@ const Toast = () => {
           return ''
         }) as ToastClassName
       }
-      closeButton={ToastCloseButton}
       // progressClassName={(css) => 'h-64'}
     />
   )
@@ -42,10 +42,10 @@ const Toast = () => {
 
 const ToastCloseButton = ({ closeToast }: { closeToast: () => void }) => (
   <button className='Toastify__close-button Toastify__close-button--dark'>
-    <svg onClick={closeToast} aria-hidden='true' viewBox='0 0 14 16'>
+    <svg aria-hidden='true' onClick={closeToast} viewBox='0 0 14 16'>
       <path
-        fillRule='evenodd'
         d='M7.71 8.23l3.75 3.75-1.48 1.48-3.75-3.75-3.75 3.75L1 11.98l3.75-3.75L1 4.48 2.48 3l3.75 3.75L9.98 3l1.48 1.48-3.75 3.75z'
+        fillRule='evenodd'
       />
     </svg>
   </button>

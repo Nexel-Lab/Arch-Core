@@ -1,5 +1,5 @@
-import { MinioClient } from './minioClient'
 import { convertFromDataStream } from '../../utils/data'
+import { MinioClient } from './minioClient'
 
 const getImageBlob: (
   bucketName: string,
@@ -7,7 +7,7 @@ const getImageBlob: (
   option?: {
     type: string
   },
-) => Promise<Blob | MediaSource> = async (bucketName, objectName, option) => {
+) => Promise<Blob | MediaSource> = (bucketName, objectName, option) => {
   return new Promise((resolve, reject) => {
     MinioClient.getObject(bucketName, objectName, (err, dataStream) => {
       if (err) {
@@ -25,7 +25,7 @@ const getImageBase64: (
   option?: {
     type: string
   },
-) => Promise<string> = async (bucketName, objectName, option) => {
+) => Promise<string> = (bucketName, objectName, option) => {
   return new Promise((resolve, reject) => {
     MinioClient.getObject(bucketName, objectName, (err, dataStream) => {
       if (err) {
@@ -52,7 +52,7 @@ const getImageBlobUrl = async (
   return URL.createObjectURL(imageBlob)
 }
 
-const getImageStream = async (bucketName: string, objectName: string) => {
+const getImageStream = (bucketName: string, objectName: string) => {
   return new Promise((resolve, reject) => {
     MinioClient.getObject(bucketName, objectName, (err, dataStream) => {
       if (err) {

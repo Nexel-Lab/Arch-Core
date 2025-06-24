@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { InternalAxiosRequestConfig, AxiosResponse } from 'axios'
+import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import axios from 'axios'
 import jwtDefaultConfig from './jwtDefaultConfig'
 
@@ -79,7 +79,7 @@ export default class JwtService {
   }
 
   private onAccessTokenFetched(accessToken: string): void {
-    // biome-ignore lint/complexity/noForEach: <explanation>
+    // biome-ignore lint/complexity/noForEach: <no explanation>
     this.subscribers.forEach((callback) => callback(accessToken))
     this.subscribers = []
   }

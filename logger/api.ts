@@ -1,6 +1,6 @@
+import type { NextApiRequest, NextApiResponse } from 'next'
 import type { IRequestContext } from './_header'
 import { SEVERITY_LEVEL } from './_header'
-import type { NextApiRequest, NextApiResponse } from 'next'
 import { SentryLogger } from './implement'
 
 class ApiLogger extends SentryLogger {

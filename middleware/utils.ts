@@ -1,6 +1,6 @@
-import type { MiddlewareSessionData } from './_header'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
+import type { MiddlewareSessionData } from './_header'
 
 export function addCustomHeaders(
   response: NextResponse,

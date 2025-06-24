@@ -1,6 +1,6 @@
 'use client'
 
-import { useReducer, useCallback } from 'react'
+import { useCallback, useReducer } from 'react'
 
 export type THistoryState<T> = {
   past: T[]

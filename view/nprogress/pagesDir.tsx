@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
-import NProgress from 'nprogress'
-import { useEffect } from 'react'
 // import { useRouter } from 'next/navigation'
 import { Router } from 'next/router'
+import NProgress from 'nprogress'
+import { useEffect } from 'react'
 
 function CreateProgress({ children }: { children: React.ReactNode }) {
   // const Router = useRouter()

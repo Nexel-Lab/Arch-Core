@@ -1,5 +1,5 @@
-import * as minio from 'minio'
 import { env } from '@env'
+import * as minio from 'minio'
 
 const MinioClient: minio.Client = new minio.Client({
   endPoint: env.S3_UPLOAD_ENDPOINT,

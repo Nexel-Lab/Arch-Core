@@ -1,11 +1,11 @@
 'use client'
 
 import {
-  useState,
-  useEffect,
-  useCallback,
-  type FormEvent,
   type ChangeEvent,
+  type FormEvent,
+  useCallback,
+  useEffect,
+  useState,
 } from 'react'
 
 export type FormValue = string | boolean | number | File | FileList | null
@@ -141,7 +141,9 @@ export function useForm<T extends FormData>({
       const validationErrors = await validateForm()
       if (validationErrors.length > 0) {
         setErrors(validationErrors)
-        validationErrors.forEach((error) => onError?.(error))
+        for (const error of validationErrors) {
+          onError?.(error)
+        }
         return
       }
 

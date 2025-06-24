@@ -1,5 +1,5 @@
-import { type TTextContent, HEADING_STYLES } from './_header'
 import { memo } from 'react'
+import { HEADING_STYLES, type TTextContent } from './_header'
 import { Text } from './text'
 
 const Heading = memo(

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 function useKeyPress(targetKey: string) {
   const [keyPressed, setKeyPressed] = useState(false)

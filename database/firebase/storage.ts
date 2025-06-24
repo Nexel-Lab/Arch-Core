@@ -1,4 +1,4 @@
-import { getStorage, ref, getDownloadURL, uploadBytes } from 'firebase/storage'
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage'
 import { firebaseApp as app } from './initialize'
 
 export const storageInstance = getStorage(app)

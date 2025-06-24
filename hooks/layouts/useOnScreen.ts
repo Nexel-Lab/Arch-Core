@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import type { RefObject } from 'react'
+import { useEffect, useState } from 'react'
 
 function useOnScreen(ref: RefObject<HTMLElement>, rootMargin = '0px') {
   const [isIntersecting, setIntersecting] = useState(false)

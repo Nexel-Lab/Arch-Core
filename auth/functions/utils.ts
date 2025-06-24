@@ -3,6 +3,7 @@ import useJwt from '../hooks/useJwt'
 export const isUserLoggedIn = () => {
   return (
     localStorage.getItem('userData') &&
+    // biome-ignore lint/correctness/useHookAtTopLevel: <no explanation>
     localStorage.getItem(useJwt({}).jwtConfig.storageTokenKeyName)
   )
 }

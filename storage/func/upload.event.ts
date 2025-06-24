@@ -5,7 +5,7 @@
 //   metadata?: Record<string, string>
 // }
 
-const uploadFile = async (file: File, urlEndpoint = '/api/upload') => {
+const uploadFile = (file: File, urlEndpoint = '/api/upload') => {
   return new Promise<object>((resolve, reject) => {
     const xhr = new XMLHttpRequest()
     xhr.open('PUT', urlEndpoint)

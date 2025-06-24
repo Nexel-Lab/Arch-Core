@@ -1,19 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+import Image from 'next/image'
+import { cn } from '../../../view/styles'
 import type {
+  CONTENT_BLOCK,
   TContent,
   TImageContent,
   TTextContent,
-  CONTENT_BLOCK,
 } from './_header'
-import Image from 'next/image'
-import { cn } from '../../../view/styles'
 
 const Text = ({ block }: { block: TTextContent[] }) => {
   return (
     <>
       {block.map(({ text, bold }, i: number) => {
         return bold ? (
-          <strong key={i} className='px-0.5 font-semibold text-primary'>
+          <strong className='px-0.5 font-semibold text-primary' key={i}>
             {text}
           </strong>
         ) : (
@@ -84,17 +85,17 @@ const BlockComponents: BlockComponentsType = {
     block.altText && (
       <div className='flex w-full justify-center py-8'>
         <Image
-          className='overflow-hidden rounded-lg'
-          src={block.src}
           alt={block.altText}
-          height={block.height}
-          width={block.width}
-          // fill
-          objectFit='cover'
-          placeholder='blur'
           blurDataURL={
             'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=='
           }
+          className='overflow-hidden rounded-lg'
+          height={block.height}
+          objectFit='cover'
+          // fill
+          placeholder='blur'
+          src={block.src}
+          width={block.width}
         />
       </div>
     ),
@@ -115,7 +116,7 @@ const HTMLFromRaw = ({ raw }: { raw: TContent[] }) => {
     <>
       {raw.map((block, index) => {
         const Component = BlockComponents[block.type as CONTENT_BLOCK]
-        return Component ? <Component key={index} block={block} /> : null
+        return Component ? <Component block={block} key={index} /> : null
       })}
     </>
   )

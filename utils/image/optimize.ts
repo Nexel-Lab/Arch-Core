@@ -3,7 +3,7 @@
 import sharp from 'sharp'
 
 const optimizeAndConvertToJpg = async (
-  inputArray: ArrayBuffer,
+  input: sharp.SharpInput | sharp.SharpInput[],
   option: {
     maxWidth: number
     maxHeight: number
@@ -16,7 +16,7 @@ const optimizeAndConvertToJpg = async (
   quality = 80,
 ): Promise<Buffer> => {
   try {
-    const jpegBuffer = await sharp(inputArray)
+    const jpegBuffer = await sharp(input)
       .toFormat('jpeg')
       .resize(option.maxWidth, option.maxHeight)
       .jpeg({ quality })
@@ -29,7 +29,7 @@ const optimizeAndConvertToJpg = async (
 }
 
 const optimizeAndConvertToPng = async (
-  inputArray: ArrayBuffer,
+  input: sharp.SharpInput | sharp.SharpInput[],
   option: {
     maxWidth: number
     maxHeight: number
@@ -42,7 +42,7 @@ const optimizeAndConvertToPng = async (
   quality = 80,
 ): Promise<Buffer> => {
   try {
-    const jpegBuffer = await sharp(inputArray)
+    const jpegBuffer = await sharp(input)
       .toFormat('png')
       .resize(option.maxWidth, option.maxHeight)
       .png({ quality })

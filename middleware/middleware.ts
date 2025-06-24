@@ -1,10 +1,10 @@
+import { protectedRoutes } from '@config/middleware'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import { protectedRoutes } from '@config/middleware'
 import { middlewareLogger as logger } from '../logger'
-import { validateSession, isValidSession } from './session'
 // import { applySecurityHeaders } from './security'
 import { checkRateLimit } from './rateLimit'
+import { isValidSession, validateSession } from './session'
 import {
   addCustomHeaders,
   redirectToLogin,

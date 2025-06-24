@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
-import { useEffect } from 'react'
 import NProgress from 'nprogress'
+import { useEffect } from 'react'
 // import { useShallow } from 'zustand/shallow'
 import { useUiState } from '@/store'
 
@@ -112,9 +112,9 @@ export const CreateProgress = ({ color }: { color: string }) => {
 
     const handleMutation: MutationCallback = () => {
       const anchorElements = document.querySelectorAll('a')
-      anchorElements.forEach((anchor) =>
-        anchor.addEventListener('click', handleAnchorClick),
-      )
+      for (const anchor of anchorElements) {
+        anchor.addEventListener('click', handleAnchorClick)
+      }
     }
 
     const mutationObserver = new MutationObserver(handleMutation)
@@ -138,9 +138,9 @@ export const CreateProgress = ({ color }: { color: string }) => {
 
     return () => {
       const anchorElements = document.querySelectorAll('a')
-      anchorElements.forEach((anchor) =>
-        anchor.removeEventListener('click', handleAnchorClick),
-      )
+      for (const anchor of anchorElements) {
+        anchor.removeEventListener('click', handleAnchorClick)
+      }
       mutationObserver.disconnect()
       window.history.pushState = originalPushState
     }

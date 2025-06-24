@@ -1,4 +1,4 @@
-import { getDatabase, ref, get } from 'firebase/database'
+import { get, getDatabase, ref } from 'firebase/database'
 import { firebaseApp as app } from './initialize'
 
 const db = getDatabase(app)

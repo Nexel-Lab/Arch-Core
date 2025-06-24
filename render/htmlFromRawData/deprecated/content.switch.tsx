@@ -1,12 +1,12 @@
+import Image from 'next/image'
+import React from 'react'
+import { cn } from '../../../view/styles'
 import type {
   TContent,
   TImageContent,
-  TTextContent,
   TRawContent,
+  TTextContent,
 } from './_header'
-import React from 'react'
-import Image from 'next/image'
-import { cn } from '../../../view/styles'
 
 const renderContent = (content: TContent | TTextContent | TImageContent) => {
   if ('text' in content) {
@@ -24,17 +24,17 @@ const renderContent = (content: TContent | TTextContent | TImageContent) => {
     return (
       <div className='flex w-full justify-center py-8'>
         <Image
-          className='overflow-hidden rounded-lg'
-          src={content.src}
           alt={content.altText}
-          height={content.height}
-          width={content.width}
-          // fill
-          objectFit='cover'
-          placeholder='blur'
           blurDataURL={
             'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=='
           }
+          className='overflow-hidden rounded-lg'
+          height={content.height}
+          objectFit='cover'
+          // fill
+          placeholder='blur'
+          src={content.src}
+          width={content.width}
         />
       </div>
     )

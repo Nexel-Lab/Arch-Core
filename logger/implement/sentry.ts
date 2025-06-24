@@ -1,15 +1,15 @@
-import type { TSeverityLevel, ILogData, IRequestContext } from '../_header'
-import { SEVERITY_LEVEL } from '../_header'
 import type { Scope } from '@sentry/nextjs'
 import {
   captureException,
   captureMessage,
-  setContext,
-  setUser,
-  setTag,
-  withScope,
   addBreadcrumb as sentryAddBreadcrumb,
+  setContext,
+  setTag,
+  setUser,
+  withScope,
 } from '@sentry/nextjs'
+import type { ILogData, IRequestContext, TSeverityLevel } from '../_header'
+import { SEVERITY_LEVEL } from '../_header'
 import { BaseLogger } from './base'
 
 export class SentryLogger extends BaseLogger {
@@ -133,9 +133,9 @@ export class SentryLogger extends BaseLogger {
 
   private configureScopeWithDefaults(scope: Scope): void {
     // Set default tags
-    Object.entries(this.defaultTags).forEach(([key, value]) => {
+    for (const [key, value] of Object.entries(this.defaultTags)) {
       scope.setTag(key, value)
-    })
+    }
 
     // Set current context
     if (Object.keys(this.currentContext).length > 0) {

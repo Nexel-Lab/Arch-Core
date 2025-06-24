@@ -1,13 +1,13 @@
 'use client'
 
-import { useEffect, useReducer } from 'react'
 import type {
   DocumentData,
+  DocumentSnapshot,
   Query,
   QuerySnapshot,
-  DocumentSnapshot,
 } from 'firebase/firestore'
 import { onSnapshot } from 'firebase/firestore'
+import { useEffect, useReducer } from 'react'
 import { useMemoCompare } from '../utils/useMemoCompare'
 
 // --- Types ---

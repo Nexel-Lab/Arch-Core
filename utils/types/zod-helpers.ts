@@ -1,9 +1,9 @@
-import { z, type ZodNumber, type ZodArray } from 'zod'
+import { type ZodArray, type ZodNumber, z } from 'zod'
+import { isNumeric } from './number-helpers'
 import {
   parseNumericString,
   parseNumericStringArray,
 } from './query-string-helpers'
-import { isNumeric } from './number-helpers'
 
 /** Converts a string to a number */
 export function numericString<I extends ZodNumber>(schema?: I) {

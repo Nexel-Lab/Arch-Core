@@ -44,7 +44,9 @@ const useElementSizeWithDebounce = (elRef: ElRef) => {
 
   const onResize = useCallback(() => {
     if (!elRef.current) {
-      return () => {}
+      return () => {
+        // no cleanup needed
+      }
     }
     const rect = elRef.current.getBoundingClientRect()
 
@@ -56,6 +58,7 @@ const useElementSizeWithDebounce = (elRef: ElRef) => {
   }, [elRef])
 
   useEffect(() => {
+    // biome-ignore lint/correctness/useHookAtTopLevel: <no explanation>
     const onResizeDebounced = useDebounce(onResize, 300)
 
     window.addEventListener('resize', onResizeDebounced)

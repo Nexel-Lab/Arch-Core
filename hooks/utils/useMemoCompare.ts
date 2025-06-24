@@ -16,7 +16,7 @@ function useMemoCompare<T>(
     }
   })
 
-  // biome-ignore lint/style/noNonNullAssertion: <explanation>
+  // biome-ignore lint/style/noNonNullAssertion: <no explanation>
   return isEqual ? previous! : next
 }
 

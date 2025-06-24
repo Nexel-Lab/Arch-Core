@@ -1,5 +1,5 @@
+import { Fragment, memo } from 'react'
 import type { TTextContent } from './_header'
-import { memo, Fragment } from 'react'
 
 const Text = memo(({ block }: { block: TTextContent[] }) => {
   return (

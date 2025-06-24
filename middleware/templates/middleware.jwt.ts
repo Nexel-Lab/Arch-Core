@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
-import { withAuth } from 'next-auth/middleware'
 import { NextResponse } from 'next/server'
+import { withAuth } from 'next-auth/middleware'
 
 export const config = {
   matcher: ['/app/:path*', '/dashboard/:path*', '/settings/:path*'],

@@ -1,2 +1,2 @@
 export { emailSchema, validateEmail } from './email'
-export { passwordSchema, validatePassword, isPasswordValid } from './password'
+export { isPasswordValid, passwordSchema, validatePassword } from './password'

@@ -1,5 +1,5 @@
-import type { TTextContent } from './_header'
 import { memo } from 'react'
+import type { TTextContent } from './_header'
 import { Text } from './text'
 
 const BlockQuote = memo(({ children }: { children: TTextContent[] }) => (

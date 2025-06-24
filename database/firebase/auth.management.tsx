@@ -1,16 +1,16 @@
 'use client'
 
-import type { IUser } from 'types'
-import { useEffect } from 'react'
 import {
-  onAuthStateChanged,
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  sendPasswordResetEmail,
   updateEmail as fbUpdateEmail,
   updatePassword as fbUpdatePassword,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signOut,
 } from 'firebase/auth'
+import { useEffect } from 'react'
+import type { IUser } from 'types'
 import { authInstance } from './auth'
 import { useAuthStore } from './auth.store'
 

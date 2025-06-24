@@ -1,7 +1,7 @@
 'use client'
 
-import { UPLOAD_STATUS, type ITrackedFile } from './_header'
-import { useState, useCallback, useRef } from 'react'
+import { useCallback, useRef, useState } from 'react'
+import { type ITrackedFile, UPLOAD_STATUS } from './_header'
 
 interface IUploadResult {
   id: string
@@ -127,7 +127,7 @@ export const usePresignedS3Upload = (
    * Upload a file to S3 using a presigned URL
    */
   const uploadToS3: TUploadToS3 = useCallback(
-    async (file, fileName = file.name, metadata = {}) => {
+    (file, fileName = file.name, metadata = {}) => {
       let retryCount = 0
       const actualFileName = fileName || file.name || `file-${Date.now()}`
 
@@ -258,9 +258,9 @@ export const usePresignedS3Upload = (
             )
 
             // Add custom metadata headers if provided
-            Object.entries(metadata).forEach(([key, value]) => {
+            for (const [key, value] of Object.entries(metadata)) {
               xhr.setRequestHeader(`x-amz-meta-${key.toLowerCase()}`, value)
-            })
+            }
 
             xhr.send(file)
           })

@@ -15,7 +15,9 @@ const useMediaPreload = (props: Props) => {
   //Handle images
   useEffect(() => {
     if (!isImage || !shouldLoad || !mediaSrc) {
-      return () => {}
+      return () => {
+        // do nothing
+      }
     }
     const onMediaLoad = () => {
       setIsLoaded(true)
@@ -39,7 +41,9 @@ const useMediaPreload = (props: Props) => {
   //Handle videos
   useEffect(() => {
     if (isImage || !shouldLoad || !mediaSrc) {
-      return () => {}
+      return () => {
+        // do nothing
+      }
     }
 
     const onMediaLoad = () => {

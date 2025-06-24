@@ -1,7 +1,7 @@
 import type {
-  TSeverityLevel,
   ILogData,
   ILogger,
+  TSeverityLevel,
   // IRequestContext,
 } from '../_header'
 import { SEVERITY_LEVEL } from '../_header'

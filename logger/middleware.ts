@@ -1,5 +1,5 @@
-import type { IMiddlewareLogger } from './_header'
 import type { NextRequest } from 'next/server'
+import type { IMiddlewareLogger } from './_header'
 import { SentryLogger } from './implement'
 
 class MiddlewareLogger extends SentryLogger implements IMiddlewareLogger {

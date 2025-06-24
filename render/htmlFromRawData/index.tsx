@@ -1,12 +1,12 @@
-import { CONTENT_BLOCK_TYPE } from './_header'
-import type {
-  TRawContent,
-  TContent,
-  TTextContent,
-  TImageContent,
-} from './_header'
-import { memo, useCallback, Fragment } from 'react'
+import { Fragment, memo, useCallback } from 'react'
 import { cn } from '@/libs/styles'
+import type {
+  TContent,
+  TImageContent,
+  TRawContent,
+  TTextContent,
+} from './_header'
+import { CONTENT_BLOCK_TYPE } from './_header'
 import { ImageBlock } from './block.image'
 import { BlockQuote } from './block.quote'
 import { Heading } from './heading'
