@@ -1,4 +1,4 @@
-import type { SeverityLevel } from '@sentry/types'
+import type { SeverityLevel } from '@sentry/nextjs'
 import type { NextRequest } from 'next/server'
 
 export type TSeverityLevel = SeverityLevel
