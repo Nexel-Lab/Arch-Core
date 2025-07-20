@@ -1,62 +1,119 @@
+import { env } from '@env'
 import type { Redis as RedisClient, RedisOptions } from 'ioredis'
-import Redis from 'ioredis'
+import { Redis } from 'ioredis'
+
+interface ServiceOptions {
+  log: ('query' | 'error' | 'warn')[]
+  redisOptions?: RedisOptions | string
+}
 
 class RedisService {
-  private connection: RedisClient | null = null
-  private readonly options: RedisOptions
+  private _connection: RedisClient | null = null
+  private readonly _redisOptions: RedisOptions | string
+  private readonly _serviceOptions: ServiceOptions
   public isConnected = false
+  private _logQuery = true
+  private _logWarn = true
+  private _logError = true
 
-  constructor(options?: RedisOptions) {
-    const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } = process.env
+  constructor(options?: ServiceOptions) {
+    const { REDIS_URI } = env
 
-    if (!REDIS_HOST)
-      throw new Error('REDIS_HOST environment variable is missing')
-    if (!REDIS_PORT)
-      throw new Error('REDIS_PORT environment variable is missing')
-    if (!REDIS_PASSWORD)
-      throw new Error('REDIS_PASSWORD environment variable is missing')
+    if (!REDIS_URI) throw new Error('REDIS_URI environment variable is missing')
 
-    const port = Number(REDIS_PORT)
-    if (Number.isNaN(port)) throw new Error('REDIS_PORT must be a valid number')
+    this._redisOptions = options?.redisOptions ?? REDIS_URI
+    this._serviceOptions = options ?? {
+      log: ['error'],
+    }
+    const logOptions = options?.log ?? ['error']
+    this._logQuery = logOptions.includes('query')
+    this._logWarn = logOptions.includes('warn')
+    this._logError = logOptions.includes('error')
+  }
 
-    this.options = options ?? {
-      host: REDIS_HOST,
-      port,
-      password: REDIS_PASSWORD,
+  private _connect(): RedisClient {
+    if (this._connection && this.isConnected) {
+      return this._connection
+    }
+
+    try {
+      if (typeof this._redisOptions === 'string') {
+        this._connection = new Redis(this._redisOptions) // URI string overload
+      } else {
+        this._connection = new Redis(this._redisOptions) // RedisOptions object overload
+      }
+
+      this._connection.on('connect', () => {
+        this.isConnected = true
+        console.log('🔌 Redis connected.')
+      })
+
+      this._connection.on('ready', () => {
+        this.isConnected = true
+        if (this._logQuery) console.log('✅ Redis ready for commands.')
+      })
+
+      this._connection.on('error', (err) => {
+        this.isConnected = false
+        if (this._logError) {
+          console.error('❌ Redis connection error:', err)
+        }
+      })
+
+      this._connection.on('close', () => {
+        this.isConnected = false
+        if (this._logWarn) {
+          console.warn('⚠️ Redis connection closed.')
+        }
+      })
+
+      return this._connection
+    } catch (error) {
+      this.isConnected = false
+      if (this._logError) {
+        console.error('❌ Failed to create Redis connection:', error)
+      }
+      throw error
     }
   }
 
-  connect(): RedisClient {
-    if (this.connection && this.isConnected) return this.connection
-
-    this.connection = new Redis(this.options)
-
-    this.connection.on('connect', () => {
-      this.isConnected = true
-      console.log('🔌 Redis connected.')
-    })
-
-    this.connection.on('error', (err) => {
-      this.isConnected = false
-      console.error('❌ Redis connection error:', err)
-    })
-
-    return this.connection
-  }
-
-  disconnect(): void {
-    if (this.connection) {
-      this.connection.disconnect()
-      this.isConnected = false
-      console.log('🛑 Redis disconnected.')
+  public async disconnect(): Promise<void> {
+    if (this._connection) {
+      try {
+        await this._connection.quit()
+      } catch (error) {
+        if (this._logWarn) {
+          console.warn(
+            '⚠️ Error during graceful shutdown, forcing disconnect:',
+            error,
+          )
+        }
+        this._connection.disconnect()
+      } finally {
+        this._connection = null
+        this.isConnected = false
+        console.log('🛑 Redis disconnected.')
+      }
     }
   }
 
   get client(): RedisClient {
-    if (!this.connection) {
-      throw new Error('Redis client is not connected. Call `connect()` first.')
+    if (!this._connection) {
+      this._connection = this._connect()
     }
-    return this.connection
+    return this._connection
+  }
+
+  public async ping(): Promise<boolean> {
+    try {
+      const result = await this.client.ping()
+      return result === 'PONG'
+    } catch (error) {
+      if (this._logError) {
+        console.error('❌ Redis ping failed:', error)
+      }
+      return false
+    }
   }
 }
 
