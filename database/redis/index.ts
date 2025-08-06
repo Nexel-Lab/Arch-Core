@@ -8,6 +8,7 @@ interface ServiceOptions {
 }
 
 class RedisService {
+  private static _instance: RedisService | null = null
   private _connection: RedisClient | null = null
   private readonly _redisOptions: RedisOptions | string
   private readonly _serviceOptions: ServiceOptions
@@ -29,6 +30,15 @@ class RedisService {
     this._logQuery = logOptions.includes('query')
     this._logWarn = logOptions.includes('warn')
     this._logError = logOptions.includes('error')
+
+    if (typeof this._redisOptions !== 'string') {
+      this._redisOptions = {
+        ...this._redisOptions,
+        maxRetriesPerRequest: 3,
+        lazyConnect: true,
+        family: 4,
+      }
+    }
   }
 
   private _connect(): RedisClient {
@@ -102,6 +112,13 @@ class RedisService {
       this._connection = this._connect()
     }
     return this._connection
+  }
+
+  public static getInstance(options?: ServiceOptions): RedisService {
+    if (!RedisService._instance) {
+      RedisService._instance = new RedisService(options)
+    }
+    return RedisService._instance
   }
 
   public async ping(): Promise<boolean> {

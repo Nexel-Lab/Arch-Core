@@ -1,24 +1,23 @@
 import { PrismaClient } from '@prisma/client'
 
+export { PRISMA_CODE } from '#core/database/prisma'
+
 const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient
 }
 
-// biome-ignore lint/suspicious/useAwait: <Should be Promise>
-const initializePrismaClient = async (): Promise<PrismaClient> => {
-  // You can add any async initialization here (e.g., checking DB migrations)
-  return new PrismaClient({
-    log:
-      process.env.NODE_ENV === 'development'
-        ? ['query', 'error', 'warn']
-        : ['error'],
-  })
+const getPrismaClient = (): PrismaClient => {
+  if (!globalForPrisma.prisma) {
+    globalForPrisma.prisma = new PrismaClient({
+      log:
+        process.env.NODE_ENV === 'development'
+          ? ['query', 'error', 'warn']
+          : ['error'],
+    })
+  }
+  return globalForPrisma.prisma
 }
 
-const prisma = globalForPrisma.prisma ?? (await initializePrismaClient())
-
-if (process.env.NODE_ENV !== 'production') {
-  globalForPrisma.prisma = prisma
-}
+const prisma = getPrismaClient()
 
 export { prisma }
