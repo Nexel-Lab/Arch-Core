@@ -1,4 +1,23 @@
-const trpcResponse = {
+type TResponse = {
+  fail: (
+    message: string,
+    error?: unknown,
+  ) => {
+    success: false
+    message: string
+    error?: string
+  }
+  success: <T>(
+    message: string,
+    data: T,
+  ) => {
+    success: true
+    message: string
+    data: T
+  }
+}
+
+const trpcResponse: TResponse = {
   fail: (message: string, error?: unknown) => {
     let errorMessage = ''
     if (
@@ -17,11 +36,10 @@ const trpcResponse = {
       error: errorMessage,
     }
   },
-  success: (message: string, data?: { data?: any; metadata?: any }) => ({
+  success: <T>(message: string, resData: T) => ({
     success: true,
     message,
-    ...(data?.data && { data: data.data }),
-    ...(data?.metadata && { _metaData: data.metadata }),
+    data: resData,
   }),
 }
 
