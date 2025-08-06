@@ -4,7 +4,7 @@
 import NProgress from 'nprogress'
 import { useEffect } from 'react'
 // import { useShallow } from 'zustand/shallow'
-import { useUiState } from '@/store'
+import { useUiStore } from '@/store'
 
 type PushStateInput = [
   data: any,
@@ -13,7 +13,7 @@ type PushStateInput = [
 ]
 
 export const CreateProgress = ({ color }: { color: string }) => {
-  const _setCursor = useUiState((st) => st.setCursor)
+  const setCursor = useUiStore((st) => st.setCursor)
   const height = `${2}px`
 
   const styles = (
@@ -102,7 +102,7 @@ export const CreateProgress = ({ color }: { color: string }) => {
     NProgress.configure({ showSpinner: false })
 
     const handleAnchorClick = (event: MouseEvent) => {
-      _setCursor(undefined)
+      setCursor(undefined)
       const targetUrl = (event.currentTarget as HTMLAnchorElement).href
       const currentUrl = location.href
       if (targetUrl !== currentUrl && !targetUrl.includes('mailto:')) {
@@ -130,7 +130,7 @@ export const CreateProgress = ({ color }: { color: string }) => {
     const originalPushState = window.history.pushState
     window.history.pushState = new Proxy(window.history.pushState, {
       apply: (target, thisArg, argArray: PushStateInput) => {
-        _setCursor(undefined)
+        setCursor(undefined)
         NProgress.done()
         return target.apply(thisArg, argArray)
       },
