@@ -1,0 +1,1 @@
+export { axiomClient } from './init'
