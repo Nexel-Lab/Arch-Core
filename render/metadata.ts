@@ -1,21 +1,27 @@
 import type { Metadata } from 'next'
 
-export const getMetadata = (metaData: {
+export interface IMetadata {
   appName: string
   title: string
   url: string
-  description: string
+  description: {
+    default: string
+    og?: string
+    twitter?: string
+  }
   coverImg: string
   author: string
   keywords: string | string[]
   twitterID: string
-}): Metadata => ({
+}
+
+export const getMetadata = (metaData: IMetadata): Metadata => ({
   metadataBase: new URL(metaData.url),
   title: {
     template: `%s | ${metaData.appName}`,
     default: metaData.title,
   },
-  description: metaData.description,
+  description: metaData.description.default,
   applicationName: metaData.appName,
   keywords: metaData.keywords,
   authors: { name: metaData.author },
@@ -33,7 +39,7 @@ export const getMetadata = (metaData: {
       default: metaData.title,
     },
     siteName: metaData.appName,
-    description: metaData.description,
+    description: metaData.description.og ?? metaData.description.default,
     images: [
       {
         url: metaData.coverImg,
@@ -51,32 +57,28 @@ export const getMetadata = (metaData: {
       template: `%s | ${metaData.appName}`,
       default: metaData.title,
     },
-    description: metaData.description,
+    description: metaData.description.og ?? metaData.description.default,
     // siteId: '1467726470533754880',
     creator: metaData.twitterID,
     // creatorId: '1467726470533754880',
     images: [metaData.coverImg],
   },
   icons: {
-    icon: '/icon.ico',
-    shortcut: '/icon.ico',
-    apple: '/icon.ico',
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
     other: {
       rel: 'apple-touch-icon-precomposed',
-      url: '/icon.ico',
+      url: '/favicon.ico',
     },
   },
   // robots: {
-  //   index: false,
+  //   index: true,
   //   follow: true,
   //   nocache: true,
   //   googleBot: {
   //     index: true,
-  //     follow: false,
-  //     noimageindex: true,
-  //     'max-video-preview': -1,
-  //     'max-image-preview': 'large',
-  //     'max-snippet': -1,
+  //     follow: true,
   //   },
   // },
   appleWebApp: {
