@@ -1,7 +1,10 @@
 import type { NextRequest } from 'next/server'
 import { prisma } from '#core/database'
+import { getRedis } from '#core/database/redis'
 import type { TMiddlewareSessionData } from './_header'
 import { getPermissionsByRoleAndPlan } from './session.utils'
+
+const SESSION_CACHE_TTL = 60 // seconds
 
 const validateSession = async (
   request: NextRequest,
@@ -17,6 +20,14 @@ const validateSession = async (
       request.cookies.get('__Secure-next-auth.session-token')?.value
 
     if (!sessionToken) return null
+
+    const redis = getRedis()
+    const cacheKey = `session:${sessionToken}`
+
+    const cached = await redis.get(cacheKey).catch(() => null)
+    if (cached) {
+      return JSON.parse(cached) as TMiddlewareSessionData
+    }
 
     const session = await prisma.session.findUnique({
       where: {
@@ -35,13 +46,12 @@ const validateSession = async (
     })
 
     if (session && session.expires < new Date()) {
-      await prisma.session
-        .delete({
-          where: { id: session.id },
-        })
-        .catch((err) => {
+      await Promise.all([
+        prisma.session.delete({ where: { id: session.id } }).catch((err) => {
           console.error('Failed to delete expired session:', err)
-        })
+        }),
+        redis.del(cacheKey).catch(() => {}),
+      ])
       return null
     }
 
@@ -58,25 +68,28 @@ const validateSession = async (
       session.user.plan,
     )
 
-    await prisma.session
-      .update({
-        where: { id: session.id },
-        data: {
-          ipAddress: ip,
-          userAgent: request.headers.get('user-agent') || undefined,
-        },
-      })
-      .catch(() => {
-        // Ignore update errors - don't break the flow if this fails
-      })
-
-    return {
+    const sessionData: TMiddlewareSessionData = {
       userId: session.user.id,
       role: session.user.role,
       plan: session.user.plan,
       active: session.user.active,
       permissions,
     }
+
+    await Promise.all([
+      redis.setex(cacheKey, SESSION_CACHE_TTL, JSON.stringify(sessionData)).catch(() => {}),
+      prisma.session
+        .update({
+          where: { id: session.id },
+          data: {
+            ipAddress: ip,
+            userAgent: request.headers.get('user-agent') || undefined,
+          },
+        })
+        .catch(() => {}),
+    ])
+
+    return sessionData
   } catch (error) {
     console.error('Session validation error:', error)
     return null

@@ -1,9 +1,9 @@
 import { protectedRoutes } from '@config/middleware'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
+import { ratelimit } from '#core/database/redis'
 import { middlewareLogger as logger } from '../logger/sentry'
 // import { applySecurityHeaders } from './security'
-import { checkRateLimit } from './rateLimit'
 import { isValidSession, validateSession } from './session'
 import {
   addCustomHeaders,
@@ -45,8 +45,11 @@ export async function middleware(request: NextRequest) {
     }
 
     if (ip && protectedRoute.rateLimit) {
-      const rateLimited = checkRateLimit(ip, protectedRoute.rateLimit)
-      if (rateLimited) {
+      const result = await ratelimit.limit(ip, {
+        requests: protectedRoute.rateLimit.requests,
+        window: `${protectedRoute.rateLimit.window}s`,
+      })
+      if (!result.success) {
         return new NextResponse('Too Many Requests', { status: 429 })
       }
     }
